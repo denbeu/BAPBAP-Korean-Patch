@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "steam_build_id": "19658140",
+  "source_asset_sha256": "d12138d2993dceeca051ddcc3e1ffcda49a87668dbba05bacc7e3537fa9c5d67",
+  "serialized_string_patches": [
+    {
+      "path_id": 120642,
+      "object_type": "MonoBehaviour",
+      "field": "_trainingButtonTextKey",
+      "original": "#Training",
+      "patched": "GAME_MODE_TYPE_TRAINING",
+      "reason": "Route the waiting-room TRAINING button through the existing GAME_MODE_TYPE_TRAINING localization key."
+    },
+    {
+      "path_id": 120642,
+      "object_type": "MonoBehaviour",
+      "field": "_trainingModalTitleTextKey",
+      "original": "#Enter training mode?",
+      "patched": "#훈련 모드에 입장할까요?",
+      "reason": "Translate the adjacent training confirmation title, which intentionally bypasses phrase lookup via the # literal prefix."
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+﻿Unofficial Korean patcher for BAPBAP that rebuilds the verified Korean patch locally from the user's own Steam installation; no proprietary game binaries are distributed.

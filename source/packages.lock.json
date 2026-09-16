@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net8.0": {
+      "AssetsTools.NET": {
+        "type": "Direct",
+        "requested": "[3.0.5, 3.0.5]",
+        "resolved": "3.0.5",
+        "contentHash": "StvUj6ykBOSOdquRmpbjn6mfM7PyOCKdBB/Ed2Jn5aIhbfrl/Oz69tmgJEQCZdix7AZRVZin14/wytP2moJgAQ=="
+      }
+    }
+  }
+}

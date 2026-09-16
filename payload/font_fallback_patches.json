@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "source_asset_sha256": "57603502f2d8a351743dae1868d6ce90dee6aa9c080efc3b5c2306bb1fa8231f",
+  "fallback_target": {
+    "path_id": 105314,
+    "object_name": "NotoSansCJK-Medium-Fallback SDF",
+    "source_font": "NotoSansCJK-Regular.ttf",
+    "atlas_population_mode": "Dynamic",
+    "hangul_syllables_cmap": 11172
+  },
+  "fallback_patches": [
+    {
+      "path_id": 105318,
+      "object_name": "VG5000-Regular SDF",
+      "field": "m_FallbackFontAssetTable",
+      "field_offset": 8984,
+      "existing_refs": [
+        { "file_id": 0, "path_id": 105310, "name": "NotoSans-Medium SDF" }
+      ],
+      "append_refs": [
+        { "file_id": 0, "path_id": 105314, "name": "NotoSansCJK-Medium-Fallback SDF" }
+      ]
+    },
+    {
+      "path_id": 105306,
+      "object_name": "Archivo-Black SDF",
+      "field": "m_FallbackFontAssetTable",
+      "field_offset": 20912,
+      "existing_refs": [
+        { "file_id": 0, "path_id": 105309, "name": "NotoSans-Black SDF" }
+      ],
+      "append_refs": [
+        { "file_id": 0, "path_id": 105314, "name": "NotoSansCJK-Medium-Fallback SDF" }
+      ]
+    },
+    {
+      "path_id": 105308,
+      "object_name": "Archivo-Medium SDF",
+      "field": "m_FallbackFontAssetTable",
+      "field_offset": 21076,
+      "existing_refs": [
+        { "file_id": 0, "path_id": 105310, "name": "NotoSans-Medium SDF" },
+        { "file_id": 0, "path_id": 105320, "name": "LiberationSans SDF" }
+      ],
+      "append_refs": [
+        { "file_id": 0, "path_id": 105314, "name": "NotoSansCJK-Medium-Fallback SDF" }
+      ]
+    }
+  ],
+  "setting_patches": [
+    {
+      "path_id": 105314,
+      "object_name": "NotoSansCJK-Medium-Fallback SDF",
+      "script_file_id": 1,
+      "script_path_id": 2686,
+      "original_object_size": 88196,
+      "original_object_sha256": "1022d7ab1cdb242eab496d5561fa52cb957da35b0603a57cc1846aeb3e03f87d",
+      "field": "m_IsMultiAtlasTexturesEnabled",
+      "field_type": "bool",
+      "field_offset": 284,
+      "original": 0,
+      "patched": 1,
+      "neighbor_guards": [
+        { "field": "m_AtlasTextureIndex", "offset": 280, "value": 0 },
+        { "field": "m_ClearDynamicDataOnBuild", "offset": 288, "value": 1 }
+      ]
+    }
+  ]
+}

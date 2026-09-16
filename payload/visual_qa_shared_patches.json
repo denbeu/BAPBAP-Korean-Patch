@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "steam_build_id": "19658140",
+  "source_asset": "build/sharedassets0.full-ko-fontfix-multiatlas.assets",
+  "source_asset_sha256": "2a2c8a8b06859747430cb1a8275cf51c63281aac343643d8987cb364b39c4edd",
+  "serialized_string_patches": [
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Chuck].name",
+      "original": "Chuck",
+      "patched": "척",
+      "length_offset": 64,
+      "reason": "Use the final approved Korean display name for Chuck."
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Anna].name",
+      "original": "Anna",
+      "patched": "안나"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Zook].name",
+      "original": "Zook",
+      "patched": "주크"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Kitsu].name",
+      "original": "Kitsu",
+      "patched": "키츠"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Sashimi].name",
+      "original": "Sashimi",
+      "patched": "사시미"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Kiddo].name",
+      "original": "Kiddo",
+      "patched": "키도"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Skinny].name",
+      "original": "Skinny",
+      "patched": "스키니"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Froggy].name",
+      "original": "Froggy",
+      "patched": "프로기"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Teevee].name",
+      "original": "Teevee",
+      "patched": "티비"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Sofia].name",
+      "original": "Sofia",
+      "patched": "소피아"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Jiro].name",
+      "original": "Jiro",
+      "patched": "지로"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Bishop].name",
+      "original": "Bishop",
+      "patched": "비숍"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Eve].name",
+      "original": "Eve",
+      "patched": "이브"
+    },
+    {
+      "path_id": 105234,
+      "object_type": "MonoBehaviour",
+      "field": "_characters[Kat].name",
+      "original": "Kat",
+      "patched": "켓"
+    },
+    {
+      "path_id": 104148,
+      "object_type": "MonoBehaviour",
+      "field": "skin.nameTranslationKey",
+      "original": "#Default Kitsu",
+      "patched": "#기본 Kitsu",
+      "reason": "Translate the literal default-skin label while preserving the English proper-name spelling in this label."
+    },
+    {
+      "path_id": 105376,
+      "object_type": "MonoBehaviour",
+      "field": "ForceRandomTranslationKey",
+      "original": "#Force Random Characters",
+      "patched": "#캐릭터 강제 무작위",
+      "reason": "Translate the observed custom-lobby setting label, which intentionally bypasses phrase lookup."
+    },
+    {
+      "path_id": 105376,
+      "object_type": "MonoBehaviour",
+      "field": "ReminderReadyUpHeaderTranslationKey",
+      "original": "#Ready Up",
+      "patched": "LOBBY_TAB_PLAY_READY_BUTTON",
+      "reason": "Route the custom-lobby ready reminder header through the existing READY button localization key."
+    },
+    {
+      "path_id": 105376,
+      "object_type": "MonoBehaviour",
+      "field": "ReminderReadyUpBodyTranslationKey",
+      "original": "#If you're happy with your team and character choice, remember to Ready Up!",
+      "patched": "#팀과 캐릭터 선택을 마쳤다면 준비 버튼을 눌러 주세요!",
+      "reason": "Translate the observed custom-lobby ready reminder body; no equivalent phrase-table key exists."
+    },
+    {
+      "path_id": 110649,
+      "object_type": "MonoBehaviour",
+      "field": "TMP_Text.m_text",
+      "original": "Max Lobby Size",
+      "patched": "최대 로비 인원",
+      "length_offset": 88,
+      "reason": "Translate the visible custom-lobby TMP label confirmed by targeted lookup."
+    },
+    {
+      "path_id": 120936,
+      "object_type": "MonoBehaviour",
+      "field": "TMP_Text.m_text",
+      "original": "Randomize Teams",
+      "patched": "팀 무작위 배정",
+      "length_offset": 88,
+      "reason": "Translate the visible custom-lobby TMP label confirmed by targeted lookup."
+    },
+    {
+      "path_id": 120744,
+      "object_type": "MonoBehaviour",
+      "field": "TMP_Text.m_text",
+      "original": "Force Random Characters",
+      "patched": "캐릭터 강제 무작위",
+      "length_offset": 88,
+      "reason": "Translate the visible custom-lobby TMP label confirmed by targeted lookup; this is separate from CustomLobbyConfig.ForceRandomTranslationKey."
+    },
+    {
+      "path_id": 131767,
+      "object_type": "MonoBehaviour",
+      "field": "TMP_Text.m_text",
+      "original": "Settings Preset",
+      "patched": "설정 프리셋",
+      "length_offset": 88,
+      "reason": "Translate the visible lobby Settings Preset TMP default that is not routed through LOBBY_SET_PRESET at runtime."
+    }
+  ]
+}

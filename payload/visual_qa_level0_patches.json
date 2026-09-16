@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "steam_build_id": "19658140",
+  "source_asset": "bapbap_Data/level0",
+  "source_asset_sha256": "5885de2731c43b222d8bd367aef91503145753bc8b0c1187469e4b8048e36b11",
+  "serialized_string_patches": [
+    {
+      "path_id": 9531,
+      "object_type": "MonoBehaviour",
+      "field": "exitMatchTranslationKey",
+      "original": "#Exit Training",
+      "patched": "#훈련 나가기"
+    },
+    {
+      "path_id": 9531,
+      "object_type": "MonoBehaviour",
+      "field": "noCooldownTranslationKey",
+      "original": "#No Cooldown",
+      "patched": "#재사용 대기시간 없음"
+    },
+    {
+      "path_id": 9531,
+      "object_type": "MonoBehaviour",
+      "field": "invincibilityTranslationKey",
+      "original": "#Invincibility",
+      "patched": "GAME_STATUSEFFECT_INVULNERABLE"
+    },
+    {
+      "path_id": 9531,
+      "object_type": "MonoBehaviour",
+      "field": "damageTranslationKey",
+      "original": "#Damage",
+      "patched": "GAME_STATS_DAMAGE"
+    },
+    {
+      "path_id": 9531,
+      "object_type": "MonoBehaviour",
+      "field": "healTranslationKey",
+      "original": "#Heal",
+      "patched": "GAME_STATUSEFFECT_HEALING"
+    },
+    {
+      "path_id": 9531,
+      "object_type": "MonoBehaviour",
+      "field": "charsTranslationKey",
+      "original": "#Characters",
+      "patched": "LOBBY_TAB_BUTTON_CHARACTERS"
+    },
+    {
+      "path_id": 9531,
+      "object_type": "MonoBehaviour",
+      "field": "spawnTranslationKey",
+      "original": "#Spawn",
+      "patched": "#생성"
+    }
+  ]
+}

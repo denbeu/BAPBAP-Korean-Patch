@@ -1,0 +1,22 @@
+# Never add game-owned or patched game binaries to this public repository.
+GameAssembly.dll
+sharedassets0.assets
+**/sharedassets0.assets
+level0
+**/level0
+*.assets
+*.resS
+*.resource
+*.bundle
+*.bank
+Player.log
+**/Player.log
+backup/
+backups/
+**/.bapko-backup/
+*.bak
+*.zip
+
+# Local test output
+test-output/
+*.tmp
