@@ -27,7 +27,7 @@ The EXEs under `tools/` are prebuilt versions of patcher/tools authored by this 
 - Reviewed Korean translation, terminology, and context
 - TMP Hangul fallback/font fix
 - Verified TRAINING and literal-UI patches
-- Limited dynamic-UI `GameAssembly.dll` patch
+- Limited Korean-only runtime `GameAssembly.dll` patch for dynamic UI, tooltip fragments, and live language refresh
 
 The supported original and patched SHA-256 values are pinned in [PATCH_SCOPE.md](PATCH_SCOPE.md). Unsupported builds, manually modified files, and target files changed by other mods are rejected.
 
@@ -42,8 +42,8 @@ The installer generates replacements for three files from the user's local game 
 - `bapbap_Data/level0`
   - applies verified training-UI literal/localization-key routing fixes.
 - `GameAssembly.dll`
-  - applies a limited patch for UI text generated outside the normal phrase table;
-  - the current scope covers lobby-name formatting, boolean labels, and ordinal/rank formatting paths.
+  - applies a limited Korean-only patch for text generated outside the normal phrase table;
+  - the current scope covers lobby-name formatting, boolean labels, ordinal/rank formatting, Korean tooltip compound fragments, Sofia Q duration formatting, and same-scene ability-title/tooltip refresh after language changes.
 
 The `GameAssembly.dll` patch is intentionally disclosed. It is generated only after the exact supported source SHA-256 and target-byte guards pass. Its complete source is `source/patch_gameassembly_dynamic_ui.py`.
 

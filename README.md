@@ -27,7 +27,7 @@ Maison Bap의 공식 소스 프로젝트에 Korean locale을 통합하기 위한
 - 한국어 번역/용어/문맥 QA 완료
 - TMP 한글 fallback/font fix 포함
 - TRAINING 및 확인된 literal UI patch 포함
-- 제한적인 dynamic UI `GameAssembly.dll` patch 포함
+- dynamic UI, 게임플레이 툴팁 조각, 실시간 언어 갱신을 위한 제한적인 한국어 전용 `GameAssembly.dll` patch 포함
 
 세 원본/최종 SHA-256은 [PATCH_SCOPE.md](PATCH_SCOPE.md)에 고정되어 있습니다. 지원하지 않는 build, 다른 모드가 적용된 파일, 수동 수정 파일에는 패치를 적용하지 않습니다.
 
@@ -42,8 +42,8 @@ Maison Bap의 공식 소스 프로젝트에 Korean locale을 통합하기 위한
 - `bapbap_Data/level0`
   - 확인된 training UI literal/localization-key routing 보정
 - `GameAssembly.dll`
-  - phrase table 밖에서 런타임에 생성되는 일부 UI만 대상으로 하는 제한적 patch
-  - 현재 범위는 lobby-name formatting, boolean 표시, ordinal/rank formatting 관련 경로입니다.
+  - phrase table 밖에서 런타임에 생성되는 일부 UI/툴팁만 대상으로 하는 제한적 한국어 전용 patch
+  - 현재 범위는 lobby-name formatting, boolean 표시, ordinal/rank formatting, 한국어 툴팁 복합 조각, 소피아 Q 시간 표기, 언어 변경 시 같은 장면의 스킬명/열린 툴팁 갱신 경로입니다.
 
 `GameAssembly.dll` patch가 있다는 사실을 숨기지 않습니다. 이 patch는 **지원 build의 정확한 원본 SHA-256 및 target-byte guard**를 통과해야만 생성되며, source는 `source/patch_gameassembly_dynamic_ui.py`에 있습니다.
 

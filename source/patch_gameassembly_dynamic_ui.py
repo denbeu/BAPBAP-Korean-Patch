@@ -19,7 +19,7 @@ from capstone.x86 import X86_OP_IMM
 SUPPORTED_SHA256 = "75278848FDD7861D3EA7B19E0A9D6397464AC763F39F2B0A5ACB9A7D33385F69"
 IMAGE_BASE_EXPECTED = 0x180000000
 PATCH_SECTION_NAME = b".bapko"
-PATCH_MARKER = b"BAPKO_UI_PATCH_V1\0"
+PATCH_MARKER = b"BAPKO_TOOLTIP_PATCH_V1\0"
 KOREAN_LANGUAGE_SLOT = 37
 
 # Confirmed IL2CPP/runtime addresses for the supported GameAssembly build.
@@ -28,9 +28,32 @@ IL2CPP_STRING_NEW_VA = 0x1803B7A50
 IL2CPP_STRING_NEW_UTF16_VA = 0x1803B7A70
 IL2CPP_VALUE_BOX_VA = 0x1803B7DE0
 STRING_FORMAT_2ARGS_VA = 0x1821E54E0
+STRING_FORMAT_1ARG_VA = 0x1821E5230
+STRING_FORMAT_ARRAY_VA = 0x1821E4F50
+STRING_CONCAT_4_VA = 0x1821E1760
 TMP_INPUTFIELD_SET_TEXT_VA = 0x1831A9F70
 GET_ORD_NUM_STR_VA = 0x180C26B80
 GET_ORD_NUM_STR_RESUME_VA = GET_ORD_NUM_STR_VA + 6
+
+# Tooltip compound-fragment callsites verified against the supported pristine build.
+TOOLTIP_DOT_CONCAT_CALLS = (
+    ("ability_dot_concat", 0x1806F6A6A, bytes.fromhex("E8F1ACAE01")),
+    ("eve_dot_concat", 0x180742AA7, bytes.fromhex("E8B4ECA901")),
+    ("bishop_badbreath_dot_concat", 0x1808E04F1, bytes.fromhex("E86A129001")),
+)
+BISHOP_ULT_HEALTH_FORMAT_CALL_VA = 0x18070A9E4
+BISHOP_ULT_HEALTH_FORMAT_EXPECTED = bytes.fromhex("E867A5AD01")
+PARRY_DURATION_FORMAT_CALL_VA = 0x18080C6C9
+PARRY_DURATION_FORMAT_EXPECTED = bytes.fromhex("E8628B9D01")
+
+# UIAbilities.Localise final cached-label store. Replacing only this 7-byte store lets
+# the helper reproduce the store and then refresh language-sensitive ability UI state
+# without touching cooldown/charge state through UIAbilities.LoadIcon/ResetIcon.
+UI_ABILITIES_LOCALISE_FINAL_STORE_VA = 0x180538B34
+UI_ABILITIES_LOCALISE_FINAL_STORE_EXPECTED = bytes.fromhex("48898718010000")
+PLAYER_MANAGER_GET_CURRENT_AUTH_VIEW_CHARACTER_VA = 0x1804CE9F0
+UI_ABILITY_ELEMENT_LOAD_ICON_CHARACTER_VA = 0x18053A4D0
+UI_ABILITIES_TRY_UPDATE_CURRENT_TOOLTIP_VA = 0x180539F50
 
 # The custom-lobby object layout observed in this exact build.
 VIEW_PLAYERS_LOBBY_STRING_OFFSET = 0x310
@@ -246,8 +269,162 @@ def build_lobby_name_helper(helper_va: int) -> bytes:
     return b.finish()
 
 
+def build_tooltip_dot_helper(
+    helper_va: int,
+    prefix_c_va: int,
+    middle_c_va: int,
+) -> bytes:
+    """Reorder the existing dynamic DoT fragment only for the Korean community slot.
+
+    Incoming managed arguments are the exact four strings passed by the original code:
+      rcx = rich damage fragment
+      rdx = " over <b>"
+      r8  = duration text (F1)
+      r9  = "s</b>"
+    Other languages tail-call the original String.Concat unchanged.
+    """
+    b = X64Builder(helper_va)
+    # Same prologue shape as lobby_name, so the existing UNWIND_LOBBY record applies.
+    b.emit(b"\x53\x57\x48\x83\xEC\x28")  # push rbx; push rdi; sub rsp,28h
+    b.emit(b"\x48\x8B\xD9")  # mov rbx,rcx (damage fragment)
+    b.emit(b"\x4C\x89\x44\x24\x20")  # mov [rsp+20h],r8 (duration)
+    emit_language_37_check(b, "original")
+
+    b.lea_rcx_rip(prefix_c_va)
+    b.call_abs(IL2CPP_STRING_NEW_VA)
+    b.emit(b"\x48\x8B\xF8")  # mov rdi,rax (managed "<b>")
+    b.lea_rcx_rip(middle_c_va)
+    b.call_abs(IL2CPP_STRING_NEW_VA)
+
+    # String.Concat("<b>", duration, "초</b>에 걸쳐 총 ", damageFragment, null)
+    b.emit(b"\x4C\x8B\xCB")  # mov r9,rbx
+    b.emit(b"\x4C\x8B\xC0")  # mov r8,rax
+    b.emit(b"\x48\x8B\x54\x24\x20")  # mov rdx,[rsp+20h]
+    b.emit(b"\x48\x8B\xCF")  # mov rcx,rdi
+    b.emit(b"\x48\xC7\x44\x24\x20\x00\x00\x00\x00")  # hidden MethodInfo = null
+    b.call_abs(STRING_CONCAT_4_VA)
+    b.emit(b"\x48\x83\xC4\x28\x5F\x5B\xC3")
+
+    b.mark("original")
+    b.emit(b"\x48\x83\xC4\x28\x5F\x5B")
+    b.jmp_abs(STRING_CONCAT_4_VA)
+    return b.finish()
+
+
+def build_bishop_health_helper(helper_va: int, format_c_va: int) -> bytes:
+    """Use noun-first Health fragment ordering for Bishop ult only in Korean."""
+    b = X64Builder(helper_va)
+    b.emit(b"\x48\x83\xEC\x28")
+    b.emit(b"\x48\x89\x54\x24\x20")  # preserve object[]
+    emit_language_37_check(b, "original")
+    b.lea_rcx_rip(format_c_va)
+    b.call_abs(IL2CPP_STRING_NEW_VA)
+    b.emit(b"\x48\x8B\xC8")  # mov rcx,rax (Korean-order format)
+    b.emit(b"\x48\x8B\x54\x24\x20")  # restore object[]
+    b.emit(b"\x45\x33\xC0")  # xor r8d,r8d (MethodInfo)
+    b.emit(b"\x48\x83\xC4\x28")
+    b.jmp_abs(STRING_FORMAT_ARRAY_VA)
+
+    b.mark("original")
+    b.emit(b"\x48\x83\xC4\x28")
+    b.jmp_abs(STRING_FORMAT_ARRAY_VA)
+    return b.finish()
+
+
+def build_parry_duration_helper(helper_va: int, format_c_va: int) -> bytes:
+    """Localize Sofia/Parry's one handwritten ``<b>{0}s</b>`` duration fragment.
+
+    The original call is String.Format(string, object). Only the Korean community
+    slot substitutes a format string with the Korean seconds suffix; every other
+    locale tail-calls the original formatter with its untouched arguments.
+    """
+    b = X64Builder(helper_va)
+    b.emit(b"\x48\x83\xEC\x28")
+    b.emit(b"\x48\x89\x54\x24\x20")  # preserve boxed duration object (rdx)
+    emit_language_37_check(b, "original")
+    b.lea_rcx_rip(format_c_va)
+    b.call_abs(IL2CPP_STRING_NEW_VA)
+    b.emit(b"\x48\x8B\xC8")  # mov rcx,rax (managed Korean format string)
+    b.emit(b"\x48\x8B\x54\x24\x20")  # restore boxed duration object
+    b.emit(b"\x45\x33\xC0")  # xor r8d,r8d (MethodInfo)
+    b.emit(b"\x48\x83\xC4\x28")
+    b.jmp_abs(STRING_FORMAT_1ARG_VA)
+
+    b.mark("original")
+    b.emit(b"\x48\x83\xC4\x28")
+    b.jmp_abs(STRING_FORMAT_1ARG_VA)
+    return b.finish()
+
+
+def build_ability_localise_refresh_helper(helper_va: int) -> bytes:
+    """Refresh cached standard-ability titles and an already-open tooltip.
+
+    This helper is called in place of the final `mov [UIAbilities+118h],rax` inside
+    UIAbilities.Localise. It first reproduces that store. For the current character it
+    then re-runs UIAbilityElement.LoadIcon(CharacterConfiguration) only on standard
+    ability elements whose description cache is empty, deliberately bypassing
+    UIAbilities.LoadIcon because that wrapper also ResetIcon()s cooldown state. Finally
+    TryUpdateCurrentTooltip() re-formats the currently open dynamic tooltip in-place.
+    """
+    b = X64Builder(helper_va)
+    # push rbx; push rsi; push rbp; push rdi; sub rsp,28h
+    b.emit(b"\x53\x56\x55\x57\x48\x83\xEC\x28")
+    b.emit(b"\x48\x89\x87\x18\x01\x00\x00")  # mov [rdi+118h],rax
+    b.emit(b"\x48\x8B\xDF")  # mov rbx,rdi (UIAbilities*)
+
+    # Current auth character. Null states still fall through to tooltip refresh.
+    b.emit(b"\x33\xC9\x33\xD2\x45\x33\xC0")
+    b.call_abs(PLAYER_MANAGER_GET_CURRENT_AUTH_VIEW_CHARACTER_VA)
+    b.emit(b"\x48\x85\xC0")
+    b.je("refresh_tooltip")
+    b.emit(b"\x48\x8B\x80\xA8\x00\x00\x00")  # player/character data
+    b.emit(b"\x48\x85\xC0")
+    b.je("refresh_tooltip")
+    b.emit(b"\x48\x8B\xB0\xB0\x00\x00\x00")  # Ability[]
+    b.emit(b"\x48\x85\xF6")
+    b.je("refresh_tooltip")
+    b.emit(b"\x48\x8B\xBB\x20\x01\x00\x00")  # UIAbilityElement[]
+    b.emit(b"\x48\x85\xFF")
+    b.je("refresh_tooltip")
+
+    # min(abilities.Length, elements.Length) -> [rsp+20h], index -> ebp.
+    b.emit(b"\x8B\x46\x18\x8B\x4F\x18\x3B\xC1\x0F\x4F\xC1")
+    b.emit(b"\x89\x44\x24\x20\x33\xED")
+    b.mark("loop")
+    b.emit(b"\x3B\x6C\x24\x20")
+    b.jcc(0x8D, "refresh_tooltip")  # jge
+    b.emit(b"\x48\x63\xC5")  # movsxd rax,ebp
+    b.emit(b"\x48\x8B\x54\xC6\x20")  # ability = abilities[i]
+    b.emit(b"\x48\x8B\x4C\xC7\x20")  # element = elements[i]
+    b.emit(b"\x48\x85\xD2")
+    b.je("next")
+    b.emit(b"\x48\x85\xC9")
+    b.je("next")
+    # Custom UI abilities set Ability+6Ch; cached-description elements must also stay
+    # on their original custom path rather than being rewritten as character skills.
+    b.emit(b"\x80\x7A\x6C\x00")
+    b.jne("next")
+    b.emit(b"\x48\x83\xB9\x30\x01\x00\x00\x00")  # cmp qword [rcx+130h],0
+    b.jne("next")
+    b.emit(b"\x48\x8B\x92\xC8\x00\x00\x00")  # CharacterConfiguration*
+    b.emit(b"\x48\x85\xD2")
+    b.je("next")
+    b.emit(b"\x45\x33\xC0")
+    b.call_abs(UI_ABILITY_ELEMENT_LOAD_ICON_CHARACTER_VA)
+    b.mark("next")
+    b.emit(b"\xFF\xC5")  # inc ebp
+    b.jmp("loop")
+
+    b.mark("refresh_tooltip")
+    b.emit(b"\x48\x8B\xCB\x33\xD2")
+    b.call_abs(UI_ABILITIES_TRY_UPDATE_CURRENT_TOOLTIP_VA)
+    b.emit(b"\x48\x83\xC4\x28\x5F\x5D\x5E\x5B\xC3")
+    return b.finish()
+
+
 UNWIND_ALLOC_28 = bytes.fromhex("0104010004420000")
 UNWIND_LOBBY = bytes.fromhex("010603000642027001300000")
+UNWIND_ABILITY_REFRESH = bytes.fromhex("01080500084204700350026001300000")
 
 
 def section_name(section: Any) -> str:
@@ -306,6 +483,18 @@ def build_patch_payload(section_rva: int, image_base: int) -> tuple[bytes, dict[
     payload[on_off : on_off + len("켬".encode("utf-8")) + 1] = "켬".encode("utf-8") + b"\0"
     payload[off_off : off_off + len("끔".encode("utf-8")) + 1] = "끔".encode("utf-8") + b"\0"
 
+    dot_prefix_off = len(payload)
+    payload.extend(b"<b>\0")
+    dot_middle_off = len(payload)
+    dot_middle = "초</b>에 걸쳐 총 ".encode("utf-8") + b"\0"
+    payload.extend(dot_middle)
+    bishop_health_format_off = len(payload)
+    bishop_health_format = "{3} <color=#{0}><b>{1}</b>{2}</color>".encode("utf-8") + b"\0"
+    payload.extend(bishop_health_format)
+    parry_duration_format_off = len(payload)
+    parry_duration_format = "<b>{0}초</b>".encode("utf-8") + b"\0"
+    payload.extend(parry_duration_format)
+
     def append_aligned(data: bytes, alignment: int = 16) -> int:
         while len(payload) % alignment:
             payload.append(0x90 if alignment == 16 else 0)
@@ -329,6 +518,38 @@ def build_patch_payload(section_rva: int, image_base: int) -> tuple[bytes, dict[
     lobby_code = build_lobby_name_helper(section_va + lobby_off)
     payload.extend(lobby_code)
 
+    tooltip_dot_off = align_up(len(payload), 16)
+    payload.extend(b"\x90" * (tooltip_dot_off - len(payload)))
+    tooltip_dot_code = build_tooltip_dot_helper(
+        section_va + tooltip_dot_off,
+        section_va + dot_prefix_off,
+        section_va + dot_middle_off,
+    )
+    payload.extend(tooltip_dot_code)
+
+    bishop_health_off = align_up(len(payload), 16)
+    payload.extend(b"\x90" * (bishop_health_off - len(payload)))
+    bishop_health_code = build_bishop_health_helper(
+        section_va + bishop_health_off,
+        section_va + bishop_health_format_off,
+    )
+    payload.extend(bishop_health_code)
+
+    parry_duration_off = align_up(len(payload), 16)
+    payload.extend(b"\x90" * (parry_duration_off - len(payload)))
+    parry_duration_code = build_parry_duration_helper(
+        section_va + parry_duration_off,
+        section_va + parry_duration_format_off,
+    )
+    payload.extend(parry_duration_code)
+
+    ability_refresh_off = align_up(len(payload), 16)
+    payload.extend(b"\x90" * (ability_refresh_off - len(payload)))
+    ability_refresh_code = build_ability_localise_refresh_helper(
+        section_va + ability_refresh_off,
+    )
+    payload.extend(ability_refresh_code)
+
     xdata_off = align_up(len(payload), 4)
     payload.extend(b"\0" * (xdata_off - len(payload)))
     alloc_unwind_off = xdata_off
@@ -336,6 +557,9 @@ def build_patch_payload(section_rva: int, image_base: int) -> tuple[bytes, dict[
     lobby_unwind_off = align_up(len(payload), 4)
     payload.extend(b"\0" * (lobby_unwind_off - len(payload)))
     payload.extend(UNWIND_LOBBY)
+    ability_refresh_unwind_off = align_up(len(payload), 4)
+    payload.extend(b"\0" * (ability_refresh_unwind_off - len(payload)))
+    payload.extend(UNWIND_ABILITY_REFRESH)
 
     meta = {
         "marker_rva": section_rva,
@@ -343,6 +567,10 @@ def build_patch_payload(section_rva: int, image_base: int) -> tuple[bytes, dict[
             "empty_c_rva": section_rva + empty_off,
             "on_utf8_rva": section_rva + on_off,
             "off_utf8_rva": section_rva + off_off,
+            "tooltip_dot_prefix_utf8_rva": section_rva + dot_prefix_off,
+            "tooltip_dot_middle_utf8_rva": section_rva + dot_middle_off,
+            "bishop_health_format_utf8_rva": section_rva + bishop_health_format_off,
+            "parry_duration_format_utf8_rva": section_rva + parry_duration_format_off,
         },
         "helpers": {
             "ordinal": {
@@ -360,10 +588,31 @@ def build_patch_payload(section_rva: int, image_base: int) -> tuple[bytes, dict[
                 "size": len(lobby_code),
                 "unwind_rva": section_rva + lobby_unwind_off,
             },
+            "tooltip_dot": {
+                "rva": section_rva + tooltip_dot_off,
+                "size": len(tooltip_dot_code),
+                "unwind_rva": section_rva + lobby_unwind_off,
+            },
+            "bishop_health": {
+                "rva": section_rva + bishop_health_off,
+                "size": len(bishop_health_code),
+                "unwind_rva": section_rva + alloc_unwind_off,
+            },
+            "parry_duration": {
+                "rva": section_rva + parry_duration_off,
+                "size": len(parry_duration_code),
+                "unwind_rva": section_rva + alloc_unwind_off,
+            },
+            "ability_refresh": {
+                "rva": section_rva + ability_refresh_off,
+                "size": len(ability_refresh_code),
+                "unwind_rva": section_rva + ability_refresh_unwind_off,
+            },
         },
         "xdata": {
             "alloc_28_rva": section_rva + alloc_unwind_off,
             "lobby_rva": section_rva + lobby_unwind_off,
+            "ability_refresh_rva": section_rva + ability_refresh_unwind_off,
         },
     }
     return bytes(payload), meta
@@ -371,8 +620,7 @@ def build_patch_payload(section_rva: int, image_base: int) -> tuple[bytes, dict[
 
 def make_runtime_functions(meta: dict[str, Any]) -> bytes:
     entries = []
-    for name in ("ordinal", "boolean", "lobby_name"):
-        helper = meta["helpers"][name]
+    for helper in meta["helpers"].values():
         begin = helper["rva"]
         end = begin + helper["size"]
         entries.append((begin, end, helper["unwind_rva"]))
@@ -384,7 +632,11 @@ def make_target_patches(image_base: int, meta: dict[str, Any]) -> list[TargetPat
     ordinal_helper_va = image_base + meta["helpers"]["ordinal"]["rva"]
     bool_helper_va = image_base + meta["helpers"]["boolean"]["rva"]
     lobby_helper_va = image_base + meta["helpers"]["lobby_name"]["rva"]
-    return [
+    tooltip_dot_helper_va = image_base + meta["helpers"]["tooltip_dot"]["rva"]
+    bishop_health_helper_va = image_base + meta["helpers"]["bishop_health"]["rva"]
+    parry_duration_helper_va = image_base + meta["helpers"]["parry_duration"]["rva"]
+    ability_refresh_helper_va = image_base + meta["helpers"]["ability_refresh"]["rva"]
+    patches = [
         TargetPatch(
             "ordinal_getordnumstr_detour",
             GET_ORD_NUM_STR_VA - image_base,
@@ -434,6 +686,49 @@ def make_target_patches(image_base: int, meta: dict[str, Any]) -> list[TargetPat
             "call",
         ),
     ]
+    for name, call_va, expected in TOOLTIP_DOT_CONCAT_CALLS:
+        patches.append(
+            TargetPatch(
+                name,
+                call_va - image_base,
+                expected,
+                rel32_bytes(0xE8, call_va, tooltip_dot_helper_va),
+                meta["helpers"]["tooltip_dot"]["rva"],
+                "call",
+            )
+        )
+    patches.append(
+        TargetPatch(
+            "bishop_ult_health_format",
+            BISHOP_ULT_HEALTH_FORMAT_CALL_VA - image_base,
+            BISHOP_ULT_HEALTH_FORMAT_EXPECTED,
+            rel32_bytes(0xE8, BISHOP_ULT_HEALTH_FORMAT_CALL_VA, bishop_health_helper_va),
+            meta["helpers"]["bishop_health"]["rva"],
+            "call",
+        )
+    )
+    patches.append(
+        TargetPatch(
+            "parry_duration_seconds_format",
+            PARRY_DURATION_FORMAT_CALL_VA - image_base,
+            PARRY_DURATION_FORMAT_EXPECTED,
+            rel32_bytes(0xE8, PARRY_DURATION_FORMAT_CALL_VA, parry_duration_helper_va),
+            meta["helpers"]["parry_duration"]["rva"],
+            "call",
+        )
+    )
+    patches.append(
+        TargetPatch(
+            "uiabilities_localise_refresh",
+            UI_ABILITIES_LOCALISE_FINAL_STORE_VA - image_base,
+            UI_ABILITIES_LOCALISE_FINAL_STORE_EXPECTED,
+            rel32_bytes(0xE8, UI_ABILITIES_LOCALISE_FINAL_STORE_VA, ability_refresh_helper_va)
+            + b"\x90\x90",
+            meta["helpers"]["ability_refresh"]["rva"],
+            "call",
+        )
+    )
+    return patches
 
 
 def add_patch_section_and_apply(original: bytes) -> tuple[bytes, dict[str, Any]]:
@@ -680,7 +975,7 @@ def validate_patch(original: bytes, patched: bytes, meta: dict[str, Any]) -> dic
         and import_fingerprint(original_pe) == import_fingerprint(patched_pe)
     )
 
-    # Exception table: original bytes stay byte-for-byte identical; only 3 entries are appended.
+    # Exception table: original bytes stay byte-for-byte identical; one entry is appended per helper.
     orig_exc = original_pe.OPTIONAL_HEADER.DATA_DIRECTORY[3]
     new_exc = patched_pe.OPTIONAL_HEADER.DATA_DIRECTORY[3]
     orig_pdata = section_for_rva(original_pe, orig_exc.VirtualAddress)
@@ -694,7 +989,13 @@ def validate_patch(original: bytes, patched: bytes, meta: dict[str, Any]) -> dic
         new_pdata.PointerToRawData : new_pdata.PointerToRawData + orig_exc.Size
     ]
     checks["exception_original_table_preserved"] = orig_exc_bytes == new_exc_prefix
-    checks["exception_size_extended_by_three"] = new_exc.Size == orig_exc.Size + 36
+    helper_names = tuple(
+        name for name, _ in sorted(meta["helpers"].items(), key=lambda item: item[1]["rva"])
+    )
+    expected_exception_growth = 12 * len(helper_names)
+    checks["exception_size_extended_for_helpers"] = (
+        new_exc.Size == orig_exc.Size + expected_exception_growth
+    )
     appended = patched[
         new_pdata.PointerToRawData + orig_exc.Size : new_pdata.PointerToRawData + new_exc.Size
     ]
@@ -703,7 +1004,6 @@ def validate_patch(original: bytes, patched: bytes, meta: dict[str, Any]) -> dic
     )
 
     runtime_entries = [struct.unpack_from("<III", appended, i) for i in range(0, len(appended), 12)]
-    helper_names = ("ordinal", "boolean", "lobby_name")
     unwind_checks = []
     for helper_name, entry in zip(helper_names, runtime_entries):
         helper = meta["helpers"][helper_name]
@@ -722,11 +1022,20 @@ def validate_patch(original: bytes, patched: bytes, meta: dict[str, Any]) -> dic
     # Validate xdata bytes and that all helper ranges are executable.
     alloc_unwind_off = patched_pe.get_offset_from_rva(meta["xdata"]["alloc_28_rva"])
     lobby_unwind_off = patched_pe.get_offset_from_rva(meta["xdata"]["lobby_rva"])
+    ability_refresh_unwind_off = patched_pe.get_offset_from_rva(
+        meta["xdata"]["ability_refresh_rva"]
+    )
     checks["unwind_alloc28_bytes"] = (
         patched[alloc_unwind_off : alloc_unwind_off + len(UNWIND_ALLOC_28)] == UNWIND_ALLOC_28
     )
     checks["unwind_lobby_bytes"] = (
         patched[lobby_unwind_off : lobby_unwind_off + len(UNWIND_LOBBY)] == UNWIND_LOBBY
+    )
+    checks["unwind_ability_refresh_bytes"] = (
+        patched[
+            ability_refresh_unwind_off : ability_refresh_unwind_off + len(UNWIND_ABILITY_REFRESH)
+        ]
+        == UNWIND_ABILITY_REFRESH
     )
     checks["helper_ranges_executable"] = all(
         executable_rva(patched_pe, meta["helpers"][name]["rva"])
@@ -825,7 +1134,7 @@ def validate_patch(original: bytes, patched: bytes, meta: dict[str, Any]) -> dic
     allowed_ranges.append(
         (
             orig_pdata.PointerToRawData + orig_exc.Size,
-            orig_pdata.PointerToRawData + orig_exc.Size + 36,
+            orig_pdata.PointerToRawData + orig_exc.Size + expected_exception_growth,
             "appended RUNTIME_FUNCTION entries",
         )
     )
@@ -893,12 +1202,12 @@ def serializable_meta(meta: dict[str, Any]) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Patch the supported BAPBAP GameAssembly dynamic Korean UI paths offline."
+        description="Patch the supported BAPBAP GameAssembly Korean UI and runtime tooltip paths offline."
     )
     parser.add_argument("--input", type=Path, required=True)
-    parser.add_argument("--output", type=Path, default=Path("build/GameAssembly.ko-patched.dll"))
+    parser.add_argument("--output", type=Path, default=Path("build/GameAssembly.ko-tooltip.dll"))
     parser.add_argument(
-        "--report", type=Path, default=Path("reports/gameassembly_patch_report.json")
+        "--report", type=Path, default=Path("reports/gameassembly_tooltip_patch_report.json")
     )
     args = parser.parse_args()
 
@@ -953,7 +1262,7 @@ def main() -> int:
     bapko = next(s for s in patched_pe.sections if s.Name.rstrip(b"\0") == PATCH_SECTION_NAME)
     report = {
         "schema_version": 1,
-        "scope": "offline GameAssembly dynamic Korean UI patch only",
+        "scope": "offline GameAssembly Korean UI plus runtime tooltip compound-fragment patch",
         "input": str(input_path),
         "output": str(output_path),
         "original_sha256": original_hash,
@@ -979,6 +1288,8 @@ def main() -> int:
             "Offline structural validation cannot prove runtime behavior without launching the game.",
             "Locale detection intentionally depends on the supported build's UIManager static-field layout and translator field offsets, guarded by the exact source SHA-256.",
             "Lobby-name conversion only matches a non-empty managed string ending exactly with \"'s Lobby\"; all other names pass through unchanged.",
+            "Tooltip DoT reordering is deliberately limited to the three verified hardcoded ' over <b>' formatter callsites in this supported build.",
+            "Bishop ultimate Health noun-first ordering is deliberately limited to its verified formatter callsite; other Health fragment producers require separate semantic review.",
         ],
         "production_files_modified": False,
         "game_launched": False,
