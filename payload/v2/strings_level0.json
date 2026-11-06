@@ -1,0 +1,774 @@
+{
+"schema_version": 1,
+"steam_build_id": "19658140",
+"serialized_string_patches": [
+{
+"path_id": 7774,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Username needs to be between 3 and 20 characters",
+"patched": "사용자 이름은 3~20자여야 합니다",
+"length_offset": 88
+},
+{
+"path_id": 7781,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Enter text...",
+"patched": "입력하세요...",
+"length_offset": 88
+},
+{
+"path_id": 7814,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "augment selection ready",
+"patched": "증강 선택 가능",
+"length_offset": 88
+},
+{
+"path_id": 7816,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Respawn in",
+"patched": "부활까지",
+"length_offset": 88
+},
+{
+"path_id": 7819,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Power Core",
+"patched": "파워 코어",
+"length_offset": 88
+},
+{
+"path_id": 7845,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "2nd PLACE",
+"patched": "2위",
+"length_offset": 88
+},
+{
+"path_id": 7857,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "SQUAD ELIMINATED",
+"patched": "스쿼드 전멸",
+"length_offset": 88
+},
+{
+"path_id": 7876,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Heal",
+"patched": "회복",
+"length_offset": 88
+},
+{
+"path_id": 7883,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "An internal server error occured.\n<link=OnClick><b><u>CLICK HERE</u></b></link> to reconnect.",
+"patched": "내부 서버 오류가 발생했습니다.\n<link=OnClick><b><u>여기를 클릭</u></b></link>해 다시 연결하세요.",
+"length_offset": 88
+},
+{
+"path_id": 7887,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Enter text...",
+"patched": "입력하세요...",
+"length_offset": 88
+},
+{
+"path_id": 7888,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Incorrect password",
+"patched": "비밀번호가 틀렸습니다",
+"length_offset": 88
+},
+{
+"path_id": 7895,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Teammate 1",
+"patched": "팀원 1",
+"length_offset": 88
+},
+{
+"path_id": 7897,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Your position",
+"patched": "내 위치",
+"length_offset": 88
+},
+{
+"path_id": 7902,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Teammate 2",
+"patched": "팀원 2",
+"length_offset": 88
+},
+{
+"path_id": 7907,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Spawn",
+"patched": "생성",
+"length_offset": 88
+},
+{
+"path_id": 7911,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Shop Station",
+"patched": "상점",
+"length_offset": 88
+},
+{
+"path_id": 7914,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Username must not have any profanity",
+"patched": "사용자 이름에 비속어를 사용할 수 없습니다",
+"length_offset": 88
+},
+{
+"path_id": 7916,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "EARLY ACCESS",
+"patched": "앞서 해보기",
+"length_offset": 88
+},
+{
+"path_id": 7921,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Enter text...",
+"patched": "입력하세요...",
+"length_offset": 88
+},
+{
+"path_id": 7935,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Input",
+"patched": "입력",
+"length_offset": 88
+},
+{
+"path_id": 7938,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Skip",
+"patched": "건너뛰기",
+"length_offset": 88
+},
+{
+"path_id": 7943,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Invincibility",
+"patched": "무적",
+"length_offset": 88
+},
+{
+"path_id": 7947,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "2nd place",
+"patched": "2위",
+"length_offset": 88
+},
+{
+"path_id": 7949,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Output",
+"patched": "출력",
+"length_offset": 88
+},
+{
+"path_id": 7955,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Menu\nKeybinds",
+"patched": "메뉴\n단축키",
+"length_offset": 88
+},
+{
+"path_id": 7956,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Gameplay\nKeybinds",
+"patched": "게임플레이\n단축키",
+"length_offset": 88
+},
+{
+"path_id": 7966,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Game In",
+"patched": "게임 시작까지",
+"length_offset": 88
+},
+{
+"path_id": 7967,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "lock in",
+"patched": "선택 확정",
+"length_offset": 88
+},
+{
+"path_id": 7989,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Voice",
+"patched": "음성",
+"length_offset": 88
+},
+{
+"path_id": 7990,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Complete Your account",
+"patched": "계정 완성하기",
+"length_offset": 88
+},
+{
+"path_id": 7991,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Enter Your Username",
+"patched": "사용자 이름을 입력하세요",
+"length_offset": 88
+},
+{
+"path_id": 8020,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Character Augments",
+"patched": "캐릭터 증강",
+"length_offset": 88
+},
+{
+"path_id": 8024,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "No Modifiers",
+"patched": "변경 요소 없음",
+"length_offset": 88
+},
+{
+"path_id": 8025,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Voice Status",
+"patched": "음성 상태",
+"length_offset": 88
+},
+{
+"path_id": 8029,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Select Spawn Area",
+"patched": "시작 지역 선택",
+"length_offset": 88
+},
+{
+"path_id": 8045,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "GUEST",
+"patched": "게스트",
+"length_offset": 88
+},
+{
+"path_id": 8059,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Incorrect password",
+"patched": "비밀번호가 틀렸습니다",
+"length_offset": 88
+},
+{
+"path_id": 8060,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Click anywhere to continue",
+"patched": "아무 곳이나 클릭해 계속하세요",
+"length_offset": 88
+},
+{
+"path_id": 8063,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Select drop area",
+"patched": "낙하 지역 선택",
+"length_offset": 88
+},
+{
+"path_id": 8065,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Items",
+"patched": "아이템",
+"length_offset": 88
+},
+{
+"path_id": 8072,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Voice Status",
+"patched": "음성 상태",
+"length_offset": 88
+},
+{
+"path_id": 8077,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "BACK TO LOBBY",
+"patched": "로비로 돌아가기",
+"length_offset": 88
+},
+{
+"path_id": 8083,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Gamemode Locked",
+"patched": "게임 모드 잠김",
+"length_offset": 88
+},
+{
+"path_id": 8084,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Enter password",
+"patched": "비밀번호 입력",
+"length_offset": 88
+},
+{
+"path_id": 8087,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "No Cooldown",
+"patched": "재사용 대기시간 없음",
+"length_offset": 88
+},
+{
+"path_id": 8094,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Input",
+"patched": "입력",
+"length_offset": 88
+},
+{
+"path_id": 8098,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "GAME MODIFIERS ACTIVE",
+"patched": "게임 변경 요소 활성화",
+"length_offset": 88
+},
+{
+"path_id": 8106,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "EXIT TRAINING",
+"patched": "훈련 나가기",
+"length_offset": 88
+},
+{
+"path_id": 8108,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Match Found",
+"patched": "매치 찾음",
+"length_offset": 88
+},
+{
+"path_id": 8119,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Scoreboard",
+"patched": "점수판",
+"length_offset": 88
+},
+{
+"path_id": 8131,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "You have been disconnected. Go back to the lobby to continue.",
+"patched": "연결이 끊어졌습니다. 로비로 돌아가 계속하세요.",
+"length_offset": 88
+},
+{
+"path_id": 8133,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "Disconnected",
+"patched": "연결 끊김",
+"length_offset": 88
+},
+{
+"path_id": 8136,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "DISCONNECTED",
+"patched": "연결 끊김",
+"length_offset": 88
+},
+{
+"path_id": 8140,
+"object_type": "MonoBehaviour",
+"field": "TMP_Text.m_text",
+"original": "An internal server error occured.\n<link=OnClick><b><u>CLICK HERE</u></b></link> to reconnect.",
+"patched": "내부 서버 오류가 발생했습니다.\n<link=OnClick><b><u>여기를 클릭</u></b></link>해 다시 연결하세요.",
+"length_offset": 88
+},
+{
+"path_id": 8172,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Gear",
+"patched": "#장비",
+"length_offset": 5220
+},
+{
+"path_id": 8172,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Pin",
+"patched": "#핀",
+"length_offset": 5136
+},
+{
+"path_id": 8289,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#No enemies in range!",
+"patched": "#범위 안에 적이 없습니다!",
+"length_offset": 352
+},
+{
+"path_id": 9232,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Here goes your consumable",
+"patched": "#여기에 소모품을 넣으세요",
+"length_offset": 60
+},
+{
+"path_id": 9232,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Consumable",
+"patched": "#소모품",
+"length_offset": 44
+},
+{
+"path_id": 9352,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Here goes your bag",
+"patched": "#여기에 가방을 장착하세요",
+"length_offset": 60
+},
+{
+"path_id": 9352,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Bag Slot",
+"patched": "#가방 슬롯",
+"length_offset": 44
+},
+{
+"path_id": 9443,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Here goes your pin",
+"patched": "#여기에 핀을 장착하세요",
+"length_offset": 60
+},
+{
+"path_id": 9443,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Pin Slot",
+"patched": "#핀 슬롯",
+"length_offset": 44
+},
+{
+"path_id": 9531,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Character Augments",
+"patched": "#캐릭터 증강",
+"length_offset": 628
+},
+{
+"path_id": 9614,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Here goes your juice",
+"patched": "#여기에 주스를 넣으세요",
+"length_offset": 56
+},
+{
+"path_id": 9614,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Juice",
+"patched": "#주스",
+"length_offset": 44
+},
+{
+"path_id": 9617,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Here goes your boots",
+"patched": "#여기에 신발을 장착하세요",
+"length_offset": 60
+},
+{
+"path_id": 9617,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Boots Slot",
+"patched": "#신발 슬롯",
+"length_offset": 44
+},
+{
+"path_id": 10164,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Here goes your hat",
+"patched": "#여기에 모자를 장착하세요",
+"length_offset": 60
+},
+{
+"path_id": 10164,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Hat Slot",
+"patched": "#모자 슬롯",
+"length_offset": 44
+},
+{
+"path_id": 10179,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Height Fog",
+"patched": "#높이 안개",
+"length_offset": 5624
+},
+{
+"path_id": 10179,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Auto",
+"patched": "#자동",
+"length_offset": 3844
+},
+{
+"path_id": 10460,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Voice",
+"patched": "#음성",
+"length_offset": 128
+},
+{
+"path_id": 10966,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Here goes your hax",
+"patched": "#여기에 HAX를 넣으세요",
+"length_offset": 52
+},
+{
+"path_id": 11324,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Upgrade Current Pin",
+"patched": "#현재 핀 강화",
+"length_offset": 60
+},
+{
+"path_id": 11324,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Upgrade Pin",
+"patched": "#핀 강화",
+"length_offset": 44
+},
+{
+"path_id": 11382,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Upgrade Current Pin",
+"patched": "#현재 핀 강화",
+"length_offset": 60
+},
+{
+"path_id": 11382,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Upgrade Pin",
+"patched": "#핀 강화",
+"length_offset": 44
+},
+{
+"path_id": 11595,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Upgrade Current Pin",
+"patched": "#현재 핀 강화",
+"length_offset": 60
+},
+{
+"path_id": 11595,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Upgrade Pin",
+"patched": "#핀 강화",
+"length_offset": 44
+},
+{
+"path_id": 11804,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Upgrade Current Pin",
+"patched": "#현재 핀 강화",
+"length_offset": 60
+},
+{
+"path_id": 11804,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Upgrade Pin",
+"patched": "#핀 강화",
+"length_offset": 44
+},
+{
+"path_id": 11897,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Here goes your consumable",
+"patched": "#여기에 소모품을 넣으세요",
+"length_offset": 60
+},
+{
+"path_id": 11897,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Consumable",
+"patched": "#소모품",
+"length_offset": 44
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Healing",
+"patched": "#회복",
+"length_offset": 988
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Healing",
+"patched": "#회복",
+"length_offset": 944
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Wait",
+"patched": "#대기",
+"length_offset": 776
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Wait",
+"patched": "#대기",
+"length_offset": 732
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Attack",
+"patched": "#공격",
+"length_offset": 684
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Retreat",
+"patched": "#후퇴",
+"length_offset": 572
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Retreat",
+"patched": "#후퇴",
+"length_offset": 528
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Stick Together",
+"patched": "#뭉치자",
+"length_offset": 352
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Stick Together",
+"patched": "#뭉치자",
+"length_offset": 300
+},
+{
+"path_id": 11975,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Enemy Spotted",
+"patched": "#적 발견",
+"length_offset": 244
+},
+{
+"path_id": 12052,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Luck",
+"patched": "#행운",
+"length_offset": 3796
+},
+{
+"path_id": 12052,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Shred",
+"patched": "#방어 관통",
+"length_offset": 3732
+}
+]
+}

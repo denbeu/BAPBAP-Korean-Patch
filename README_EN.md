@@ -33,19 +33,23 @@ The supported original and patched SHA-256 values are pinned in [PATCH_SCOPE.md]
 
 ## Files modified by the patch
 
-The installer generates replacements for three files from the user's local game installation:
+The installer generates replacements for five files from the user's local game installation. Patch v2 is layered on the verified v1 output, so a fresh install and an upgrade from v1 produce identical files.
 
 - `bapbap_Data/sharedassets0.assets`
   - replaces the existing Turkish locale phrase slot with the 1,690-row Korean phrase payload;
-  - applies verified TRAINING/literal UI and character-display string fixes;
+  - applies verified TRAINING/literal UI and character-display string fixes, and translates `#` literal strings and static TMP default text;
   - configures Hangul fallback through the game's existing Noto Sans CJK TMP FontAsset and enables its multi-atlas setting.
 - `bapbap_Data/level0`
-  - applies verified training-UI literal/localization-key routing fixes.
+  - applies verified training-UI literal/localization-key routing fixes, and translates `#` literal strings and static TMP default text.
+- `bapbap_Data/resources.assets`
+  - translates `#` literal strings and static TMP default text on placed map objects.
+- `bapbap_Data/il2cpp_data/Metadata/global-metadata.dat`
+  - points 66 UI string literals hard-coded in managed code at Korean text.
 - `GameAssembly.dll`
-  - applies a limited Korean-only patch for text generated outside the normal phrase table;
-  - the current scope covers lobby-name formatting, boolean labels, ordinal/rank formatting, Korean tooltip compound fragments, Sofia Q duration formatting, and same-scene ability-title/tooltip refresh after language changes.
+  - applies a limited patch for text generated outside the normal phrase table;
+  - the current scope covers lobby-name formatting, boolean labels, ordinal/rank formatting, Korean tooltip compound fragments, Sofia Q duration formatting, same-scene ability-title/tooltip refresh after language changes, stat-fragment word order, and keeping the friend list from removing nickname characters.
 
-The `GameAssembly.dll` patch is intentionally disclosed. It is generated only after the exact supported source SHA-256 and target-byte guards pass. Its complete source is `source/patch_gameassembly_dynamic_ui.py`.
+The `GameAssembly.dll` patch is intentionally disclosed. It is generated only after the exact supported source SHA-256 and target-byte guards pass. Its complete source is `source/patch_gameassembly_dynamic_ui.py` and `source/patch_gameassembly_v2.py`. See [PATCH_SCOPE.md](PATCH_SCOPE.md) for root causes and which changes apply to other locales.
 
 Because the community patch has no access to the official source project, it currently reuses the **Turkish locale slot** for Korean instead of adding a native Korean locale. Select Türkçe in the in-game language setting after installation. This is a community-patch compatibility mechanism, not an official integration design.
 
@@ -54,7 +58,7 @@ Because the community patch has no access to the official source project, it cur
 1. Install the supported BAPBAP build through Steam.
 2. Close BAPBAP before installing or uninstalling.
 3. Install the **.NET 8 Runtime** for the prebuilt `BapAssetTool.exe`.
-4. The target files must match the supported original hashes. Files modified by another mod or by hand are rejected.
+4. The target files must match the supported original or v1 hashes. Files modified by another mod or by hand are rejected.
 
 ## Install
 
@@ -74,14 +78,15 @@ To run the full patch chain and verify the generated final hashes without changi
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDir "D:\SteamLibrary\steamapps\common\BAPBAP" -DryRun
 ```
 
-The installer validates all three original files, builds replacements in a temporary directory, and installs them only when all three outputs exactly match [PATCH_SCOPE.md](PATCH_SCOPE.md).
+The installer validates the original or v1 files, builds replacements in a temporary directory, and installs them only when all five outputs exactly match [PATCH_SCOPE.md](PATCH_SCOPE.md).
 
 ## Backup and uninstall
 
-On the first successful install, the verified original files are stored under:
+The files present before installation are stored under:
 
 ```text
-.bapko-backup\build-19658140\
+.bapko-backup\build-19658140\   Steam originals (fresh install), resources.assets, global-metadata.dat
+.bapko-backup\v1\               v1 files (upgrade from v1)
 ```
 
 Close BAPBAP and run `uninstall.bat`. Like the install BAT, it wraps `uninstall.ps1`.
@@ -90,7 +95,7 @@ Close BAPBAP and run `uninstall.bat`. Like the install BAT, it wraps `uninstall.
 powershell -NoProfile -ExecutionPolicy Bypass -File .\uninstall.ps1 -GameDir "D:\SteamLibrary\steamapps\common\BAPBAP"
 ```
 
-The uninstaller validates both the backup hashes and the current target-file state before restoring anything. Unknown modifications cause it to stop rather than overwrite them.
+The uninstaller validates both the backup hashes and the current target-file state before restoring anything. It restores the Steam originals when that backup exists, otherwise the v1 state; use Steam's "Verify integrity of game files" to get originals from there. Unknown modifications cause it to stop rather than overwrite them.
 
 ## Steam updates
 

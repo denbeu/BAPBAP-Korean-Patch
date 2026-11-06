@@ -1,0 +1,3 @@
+# The installer pins the exact bytes of these payloads, including CRLF line endings.
+payload/korean-full.txt -text
+payload/v2/korean-full-v2.txt -text

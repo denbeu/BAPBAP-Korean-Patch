@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "source_asset_sha256": "d05d9a0210b72a3cacba146af146ea9680a68770c12cc84277d388a69f49e6ee",
+  "fallback_target": {
+    "path_id": 105314,
+    "object_name": "NotoSansCJK-Medium-Fallback SDF",
+    "source_font": "NotoSansCJK-Regular.ttf",
+    "atlas_population_mode": "Dynamic",
+    "hangul_syllables_cmap": 11172
+  },
+  "fallback_patches": [
+    {
+      "path_id": 105320,
+      "object_name": "LiberationSans SDF",
+      "field": "m_FallbackFontAssetTable",
+      "field_offset": 27192,
+      "existing_refs": [
+        { "file_id": 0, "path_id": 105319, "name": "LiberationSans SDF - Fallback" }
+      ],
+      "append_refs": [
+        { "file_id": 0, "path_id": 105314, "name": "NotoSansCJK-Medium-Fallback SDF" }
+      ]
+    },
+    {
+      "path_id": 105305,
+      "object_name": "0927 SDF",
+      "field": "m_FallbackFontAssetTable",
+      "field_offset": 2716,
+      "existing_refs": [],
+      "append_refs": [
+        { "file_id": 0, "path_id": 105314, "name": "NotoSansCJK-Medium-Fallback SDF" }
+      ]
+    }
+  ],
+  "setting_patches": []
+}

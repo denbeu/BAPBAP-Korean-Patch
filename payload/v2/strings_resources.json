@@ -1,0 +1,494 @@
+{
+"schema_version": 1,
+"steam_build_id": "19658140",
+"serialized_string_patches": [
+{
+"path_id": 245535,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Training Dummy",
+"patched": "#훈련용 허수아비",
+"length_offset": 48
+},
+{
+"path_id": 246107,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Stop",
+"patched": "#중지",
+"length_offset": 324
+},
+{
+"path_id": 246107,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#In cooldown ({0})",
+"patched": "#재사용 대기 중 ({0})",
+"length_offset": 300
+},
+{
+"path_id": 246107,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Play",
+"patched": "#플레이",
+"length_offset": 288
+},
+{
+"path_id": 246167,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Consumable Shop",
+"patched": "#소모품 상점",
+"length_offset": 48
+},
+{
+"path_id": 246522,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#You reached level {0}!",
+"patched": "#레벨 {0}에 도달했습니다!",
+"length_offset": 1820
+},
+{
+"path_id": 246522,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#LEVEL {0}!",
+"patched": "#레벨 {0}!",
+"length_offset": 1804
+},
+{
+"path_id": 246522,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Reel In",
+"patched": "#낚싯줄 감기",
+"length_offset": 1692
+},
+{
+"path_id": 247061,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Cancel",
+"patched": "#취소",
+"length_offset": 592
+},
+{
+"path_id": 247061,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Drop",
+"patched": "#떨어뜨리기",
+"length_offset": 576
+},
+{
+"path_id": 247137,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Chosen Shovel",
+"patched": "#선택받은 삽",
+"length_offset": 48
+},
+{
+"path_id": 247554,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Consumable Shop",
+"patched": "#소모품 상점",
+"length_offset": 48
+},
+{
+"path_id": 248599,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Cancel",
+"patched": "#취소",
+"length_offset": 592
+},
+{
+"path_id": 248599,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Drop",
+"patched": "#떨어뜨리기",
+"length_offset": 576
+},
+{
+"path_id": 249179,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Stop",
+"patched": "#중지",
+"length_offset": 324
+},
+{
+"path_id": 249179,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#In cooldown ({0})",
+"patched": "#재사용 대기 중 ({0})",
+"length_offset": 300
+},
+{
+"path_id": 249179,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Play",
+"patched": "#플레이",
+"length_offset": 288
+},
+{
+"path_id": 250198,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Crane Hazzard",
+"patched": "#크레인 위험물",
+"length_offset": 48
+},
+{
+"path_id": 254453,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Crane Hazzard",
+"patched": "#크레인 위험물",
+"length_offset": 48
+},
+{
+"path_id": 254599,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Training Dummy",
+"patched": "#훈련용 허수아비",
+"length_offset": 48
+},
+{
+"path_id": 254707,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Training Dummy",
+"patched": "#훈련용 허수아비",
+"length_offset": 48
+},
+{
+"path_id": 255443,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Cancel",
+"patched": "#취소",
+"length_offset": 592
+},
+{
+"path_id": 255443,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Drop",
+"patched": "#떨어뜨리기",
+"length_offset": 576
+},
+{
+"path_id": 256332,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Consumable Shop",
+"patched": "#소모품 상점",
+"length_offset": 48
+},
+{
+"path_id": 258373,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Cancel",
+"patched": "#취소",
+"length_offset": 592
+},
+{
+"path_id": 258373,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Drop",
+"patched": "#떨어뜨리기",
+"length_offset": 576
+},
+{
+"path_id": 261050,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Use",
+"patched": "#사용",
+"length_offset": 228
+},
+{
+"path_id": 261166,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Crane Hazzard",
+"patched": "#크레인 위험물",
+"length_offset": 48
+},
+{
+"path_id": 263731,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Consumable Shop",
+"patched": "#소모품 상점",
+"length_offset": 48
+},
+{
+"path_id": 265097,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Consumable Shop",
+"patched": "#소모품 상점",
+"length_offset": 48
+},
+{
+"path_id": 266169,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Stop",
+"patched": "#중지",
+"length_offset": 324
+},
+{
+"path_id": 266169,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#In cooldown ({0})",
+"patched": "#재사용 대기 중 ({0})",
+"length_offset": 300
+},
+{
+"path_id": 266169,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Play",
+"patched": "#플레이",
+"length_offset": 288
+},
+{
+"path_id": 266518,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Cancel",
+"patched": "#취소",
+"length_offset": 592
+},
+{
+"path_id": 266518,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Drop",
+"patched": "#떨어뜨리기",
+"length_offset": 576
+},
+{
+"path_id": 266936,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#<i>(Fish Noises)",
+"patched": "#<i>(물고기 소리)",
+"length_offset": 1656
+},
+{
+"path_id": 266936,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#<i>(Fish Noises)",
+"patched": "#<i>(물고기 소리)",
+"length_offset": 1628
+},
+{
+"path_id": 266936,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Purchase",
+"patched": "#구입",
+"length_offset": 1492
+},
+{
+"path_id": 267415,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Training Dummy",
+"patched": "#훈련용 허수아비",
+"length_offset": 48
+},
+{
+"path_id": 269670,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Crane Hazzard",
+"patched": "#크레인 위험물",
+"length_offset": 48
+},
+{
+"path_id": 271657,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Secret Rock",
+"patched": "#시크릿락",
+"length_offset": 48
+},
+{
+"path_id": 272539,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Cancel",
+"patched": "#취소",
+"length_offset": 592
+},
+{
+"path_id": 272539,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Drop",
+"patched": "#떨어뜨리기",
+"length_offset": 576
+},
+{
+"path_id": 273211,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Crane Hazzard",
+"patched": "#크레인 위험물",
+"length_offset": 48
+},
+{
+"path_id": 273528,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Cancel",
+"patched": "#취소",
+"length_offset": 592
+},
+{
+"path_id": 273528,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Drop",
+"patched": "#떨어뜨리기",
+"length_offset": 576
+},
+{
+"path_id": 274562,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Consumable Shop",
+"patched": "#소모품 상점",
+"length_offset": 48
+},
+{
+"path_id": 275969,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Crane Hazzard",
+"patched": "#크레인 위험물",
+"length_offset": 48
+},
+{
+"path_id": 276732,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#You reached level {0}!",
+"patched": "#레벨 {0}에 도달했습니다!",
+"length_offset": 1820
+},
+{
+"path_id": 276732,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#LEVEL {0}!",
+"patched": "#레벨 {0}!",
+"length_offset": 1804
+},
+{
+"path_id": 276732,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Reel In",
+"patched": "#낚싯줄 감기",
+"length_offset": 1692
+},
+{
+"path_id": 277965,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Cancel",
+"patched": "#취소",
+"length_offset": 592
+},
+{
+"path_id": 277965,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Drop",
+"patched": "#떨어뜨리기",
+"length_offset": 576
+},
+{
+"path_id": 278749,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Secret Rock",
+"patched": "#시크릿락",
+"length_offset": 48
+},
+{
+"path_id": 278796,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#You reached level {0}!",
+"patched": "#레벨 {0}에 도달했습니다!",
+"length_offset": 1820
+},
+{
+"path_id": 278796,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#LEVEL {0}!",
+"patched": "#레벨 {0}!",
+"length_offset": 1804
+},
+{
+"path_id": 278796,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Reel In",
+"patched": "#낚싯줄 감기",
+"length_offset": 1692
+},
+{
+"path_id": 279681,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Secret Rock",
+"patched": "#시크릿락",
+"length_offset": 48
+},
+{
+"path_id": 284599,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Cancel",
+"patched": "#취소",
+"length_offset": 592
+},
+{
+"path_id": 284599,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Drop",
+"patched": "#떨어뜨리기",
+"length_offset": 576
+},
+{
+"path_id": 285132,
+"object_type": "MonoBehaviour",
+"field": "literal",
+"original": "#Training Dummy",
+"patched": "#훈련용 허수아비",
+"length_offset": 48
+}
+]
+}

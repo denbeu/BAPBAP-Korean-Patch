@@ -1,0 +1,335 @@
+{
+"schema_version": 1,
+"literals": [
+{
+"index": 1239,
+"original": "+{0} HP",
+"patched": "+{0} 체력"
+},
+{
+"index": 4375,
+"original": "Battle Royale Zone Incoming",
+"patched": "배틀로얄 구역이 다가옵니다"
+},
+{
+"index": 4575,
+"original": "Buy Consumable",
+"patched": "소모품 구매"
+},
+{
+"index": 4576,
+"original": "Buy Life",
+"patched": "목숨 구매"
+},
+{
+"index": 4577,
+"original": "Buy Passive",
+"patched": "패시브 구매"
+},
+{
+"index": 5613,
+"original": "Coming Soon",
+"patched": "출시 예정"
+},
+{
+"index": 5614,
+"original": "Coming Soon!",
+"patched": "출시 예정!"
+},
+{
+"index": 5852,
+"original": "Consumables full!",
+"patched": "소모품이 가득 찼습니다!"
+},
+{
+"index": 5800,
+"original": "Congrats! You found a secret rock!\nHere is +{0}HP.",
+"patched": "축하합니다! 시크릿 바위를 찾았습니다!\n체력 +{0}."
+},
+{
+"index": 6772,
+"original": "Dimensions",
+"patched": "차원"
+},
+{
+"index": 11065,
+"original": "No Dimensions",
+"patched": "차원 없음"
+},
+{
+"index": 11082,
+"original": "No Modifiers",
+"patched": "변경 요소 없음"
+},
+{
+"index": 8236,
+"original": "Game Modifiers",
+"patched": "게임 변경 요소"
+},
+{
+"index": 8235,
+"original": "Game Modifier",
+"patched": "게임 변경 요소"
+},
+{
+"index": 8290,
+"original": "Generic Augments",
+"patched": "공용 증강"
+},
+{
+"index": 8308,
+"original": "Get a random passive.",
+"patched": "무작위 패시브를 얻습니다."
+},
+{
+"index": 9797,
+"original": "Item is already max upgraded",
+"patched": "이미 최대로 강화된 아이템입니다"
+},
+{
+"index": 12065,
+"original": "Pick up an item and then you can upgrade it!",
+"patched": "아이템을 주우면 강화할 수 있습니다!"
+},
+{
+"index": 17527,
+"original": "Upgrade Item",
+"patched": "아이템 강화"
+},
+{
+"index": 17529,
+"original": "Upgrade for {0} {1}.",
+"patched": "{0} {1}에 강화합니다."
+},
+{
+"index": 11068,
+"original": "No Game Modes Available",
+"patched": "사용 가능한 게임 모드가 없습니다"
+},
+{
+"index": 11087,
+"original": "No Revives left",
+"patched": "남은 부활이 없습니다"
+},
+{
+"index": 11528,
+"original": "On Cooldown.",
+"patched": "재사용 대기 중."
+},
+{
+"index": 11529,
+"original": "On Sale! {0}% Off",
+"patched": "세일! {0}% 할인"
+},
+{
+"index": 12370,
+"original": "Purchase a new life\nCosts {0} {1}",
+"patched": "목숨을 구매합니다\n비용: {0} {1}"
+},
+{
+"index": 12371,
+"original": "Purchase a new random consumable\nCosts {0} {1}",
+"patched": "무작위 소모품을 구매합니다\n비용: {0} {1}"
+},
+{
+"index": 12372,
+"original": "Purchase a new random passive\nCosts {0} {1}",
+"patched": "무작위 패시브를 구매합니다\n비용: {0} {1}"
+},
+{
+"index": 12373,
+"original": "Purchase a random passive for {0} {1}.",
+"patched": "{0} {1}에 무작위 패시브를 구매합니다."
+},
+{
+"index": 12802,
+"original": "Reach level {0} to unlock",
+"patched": "{0}레벨에 도달하면 잠금 해제"
+},
+{
+"index": 12907,
+"original": "Refreshes shortly...",
+"patched": "곧 갱신됩니다..."
+},
+{
+"index": 12908,
+"original": "Refreshing soon...",
+"patched": "곧 갱신됩니다..."
+},
+{
+"index": 13136,
+"original": "Revive teammates",
+"patched": "팀원 부활"
+},
+{
+"index": 13716,
+"original": "Sacrifice",
+"patched": "희생"
+},
+{
+"index": 13717,
+"original": "Sacrificing",
+"patched": "희생 중"
+},
+{
+"index": 13909,
+"original": "Sell for",
+"patched": "판매 가격"
+},
+{
+"index": 13910,
+"original": "Selling",
+"patched": "판매 중"
+},
+{
+"index": 14201,
+"original": "Sign up successful!",
+"patched": "가입 완료!"
+},
+{
+"index": 14300,
+"original": "Someone has taken it.",
+"patched": "누군가 이미 가져갔습니다."
+},
+{
+"index": 14609,
+"original": "Successful code used.",
+"patched": "코드를 사용했습니다."
+},
+{
+"index": 15615,
+"original": "Teleporter hijacked",
+"patched": "텔레포터가 탈취되었습니다"
+},
+{
+"index": 15616,
+"original": "Teleporter recharging",
+"patched": "텔레포터 재충전 중"
+},
+{
+"index": 16081,
+"original": "The lootcrate is locked.",
+"patched": "전리품 상자가 잠겨 있습니다."
+},
+{
+"index": 16805,
+"original": "Try to take?",
+"patched": "가져가 볼까요?"
+},
+{
+"index": 16827,
+"original": "Trying to exit...",
+"patched": "나가는 중..."
+},
+{
+"index": 17536,
+"original": "Upon fatal damage, activate Last Breath for 3s. During that period your HP cant go below 1.",
+"patched": "치명적인 피해를 받으면 3초 동안 마지막 숨결이 발동합니다. 그동안 체력이 1 아래로 내려가지 않습니다."
+},
+{
+"index": 17986,
+"original": "Who will it be?",
+"patched": "누가 될까요?"
+},
+{
+"index": 18191,
+"original": "You do not have a juice box.",
+"patched": "주스 상자가 없습니다."
+},
+{
+"index": 18193,
+"original": "You have already gained the power.",
+"patched": "이미 힘을 얻었습니다."
+},
+{
+"index": 18196,
+"original": "You have no friends :( Sign in or add a friend",
+"patched": "친구가 없습니다 :( 로그인하거나 친구를 추가하세요"
+},
+{
+"index": 18197,
+"original": "You have sacrificed enough.",
+"patched": "충분히 희생했습니다."
+},
+{
+"index": 18209,
+"original": "You were not chosen.",
+"patched": "선택받지 못했습니다."
+},
+{
+"index": 21200,
+"original": "augment selection ready",
+"patched": "증강 선택 가능"
+},
+{
+"index": 27781,
+"original": "{0} Points",
+"patched": "{0}점"
+},
+{
+"index": 27783,
+"original": "{0} Uses left",
+"patched": "남은 사용 횟수 {0}회"
+},
+{
+"index": 27802,
+"original": "{0} in stock",
+"patched": "재고 {0}개"
+},
+{
+"index": 27814,
+"original": "{0} kill",
+"patched": "처치 {0}"
+},
+{
+"index": 7469,
+"original": "Event ending soon...",
+"patched": "이벤트가 곧 종료됩니다..."
+},
+{
+"index": 7470,
+"original": "Event ends in",
+"patched": "이벤트 종료까지"
+},
+{
+"index": 7483,
+"original": "Event starting soon...",
+"patched": "이벤트가 곧 시작됩니다..."
+},
+{
+"index": 7484,
+"original": "Event starts in",
+"patched": "이벤트 시작까지"
+},
+{
+"index": 9587,
+"original": "Invite a friend!",
+"patched": "친구를 초대하세요!"
+},
+{
+"index": 3683,
+"original": "Activate for",
+"patched": "활성화 비용"
+},
+{
+"index": 12374,
+"original": "Purchase for",
+"patched": "구매 비용"
+},
+{
+"index": 11481,
+"original": "Obtaining",
+"patched": "획득 중"
+},
+{
+"index": 7681,
+"original": "Extracted",
+"patched": "추출 완료"
+},
+{
+"index": 6929,
+"original": "During Public Beta, servers are only up from \n <b>{0}:00</b> to <b>{1}:00</b>",
+"patched": "공개 베타 기간에는 서버가 다음 시간에만 열립니다\n <b>{0}:00</b> ~ <b>{1}:00</b>"
+}
+]
+}

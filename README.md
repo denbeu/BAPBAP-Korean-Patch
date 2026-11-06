@@ -31,21 +31,36 @@ Maison Bap의 공식 소스 프로젝트에 Korean locale을 통합하기 위한
 - TRAINING 및 확인된 literal UI patch 포함
 - dynamic UI, 게임플레이 툴팁 조각, 실시간 언어 갱신을 위한 제한적인 한국어 전용 `GameAssembly.dll` patch 포함
 
-세 원본/최종 SHA-256은 [PATCH_SCOPE.md](PATCH_SCOPE.md)에 고정되어 있습니다. 지원하지 않는 build, 다른 모드가 적용된 파일, 수동 수정 파일에는 패치를 적용하지 않습니다.
+원본/최종 SHA-256은 [PATCH_SCOPE.md](PATCH_SCOPE.md)에 고정되어 있습니다. 지원하지 않는 build, 다른 모드가 적용된 파일, 수동 수정 파일에는 패치를 적용하지 않습니다.
+
+## v2 변경 사항
+
+- 킬로그, 팀원 이름, 점수판의 한글 닉네임이 □로 깨지던 문제 수정
+- 친구 목록에서 한글 닉네임의 끝 글자가 사라지던 문제 수정
+- 증강의 능력치 표기 어순 수정(`-150 ♥체력` → `♥체력 -150`)과 어색한 증강 설명 36건 수정
+- 경기 중에는 로비 서버 연결 끊김 알림을 표시하지 않음(경기 연결과 별개인 알림)
+- 미번역 문자열 번역: 소모품, 게임 모드, 상호작용, 핑, 꾸미기 아이템 이름 등 1,125종과 고정 UI 157종, 코드 내 문구 66종
+- 기존 v1 설치본에서 그대로 업그레이드 가능
+
+v2는 v1 위에 적용되는 증분 패치입니다. Steam 원본에서 설치하든 v1에서 업그레이드하든 결과 파일은 같습니다.
 
 ## 패치가 수정하는 파일
 
-설치 시 사용자의 로컬 게임 설치본에서 다음 세 파일을 대상으로 새 결과물을 생성합니다.
+설치 시 사용자의 로컬 게임 설치본에서 다음 다섯 파일을 대상으로 새 결과물을 생성합니다.
 
 - `bapbap_Data/sharedassets0.assets`
   - 기존 Turkish locale phrase slot에 1,690행 한국어 phrase를 적용
-  - 확인된 TRAINING/literal UI 및 캐릭터 표시 문자열 보정
+  - 확인된 TRAINING/literal UI, 캐릭터 표시 문자열, `#` 리터럴 문자열, 고정 TMP 기본 텍스트 번역
   - 기존 Noto Sans CJK TMP FontAsset을 이용한 한글 fallback 및 multi-atlas 설정 보정
 - `bapbap_Data/level0`
-  - 확인된 training UI literal/localization-key routing 보정
+  - 확인된 training UI literal/localization-key routing 보정, `#` 리터럴과 고정 TMP 기본 텍스트 번역
+- `bapbap_Data/resources.assets`
+  - 맵에 배치된 오브젝트의 `#` 리터럴과 고정 TMP 기본 텍스트 번역
+- `bapbap_Data/il2cpp_data/Metadata/global-metadata.dat`
+  - 코드에 하드코딩된 UI 문구 66종을 번역문으로 연결
 - `GameAssembly.dll`
-  - phrase table 밖에서 런타임에 생성되는 일부 UI/툴팁만 대상으로 하는 제한적 한국어 전용 patch
-  - 현재 범위는 lobby-name formatting, boolean 표시, ordinal/rank formatting, 한국어 툴팁 복합 조각, 소피아 Q 시간 표기, 언어 변경 시 같은 장면의 스킬명/열린 툴팁 갱신 경로입니다.
+  - phrase table 밖에서 런타임에 생성되는 일부 UI/툴팁을 대상으로 하는 제한적 patch
+  - 현재 범위는 lobby-name formatting, boolean 표시, ordinal/rank formatting, 한국어 툴팁 복합 조각, 소피아 Q 시간 표기, 언어 변경 시 같은 장면의 스킬명/열린 툴팁 갱신 경로, 능력치 조각 어순, 친구 목록 닉네임 글자 제거 방지입니다.
 
 `GameAssembly.dll` patch가 있다는 사실을 숨기지 않습니다. 이 patch는 **지원 build의 정확한 원본 SHA-256 및 target-byte guard**를 통과해야만 생성되며, source는 `source/patch_gameassembly_dynamic_ui.py`에 있습니다.
 
@@ -76,14 +91,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDir "D:\S
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDir "D:\SteamLibrary\steamapps\common\BAPBAP" -DryRun
 ```
 
-설치기는 원본 3파일의 해시를 확인하고 임시 폴더에서 patch를 만든 뒤, 세 결과가 모두 [PATCH_SCOPE.md](PATCH_SCOPE.md)의 최종 해시와 정확히 일치할 때만 교체합니다.
+설치기는 원본 또는 v1 상태의 파일 해시를 확인하고 임시 폴더에서 patch를 만든 뒤, 다섯 결과가 모두 [PATCH_SCOPE.md](PATCH_SCOPE.md)의 최종 해시와 정확히 일치할 때만 교체합니다.
 
 ## 백업과 제거
 
-최초 설치 시 검증된 원본 3파일은 게임 폴더의 다음 위치에 보관됩니다.
+설치 전 파일은 게임 폴더의 다음 위치에 보관됩니다.
 
 ```text
-.bapko-backup\build-19658140\
+.bapko-backup\build-19658140\   Steam 원본(원본에서 설치한 경우), resources.assets, global-metadata.dat
+.bapko-backup\v1\               v1에서 업그레이드한 경우의 v1 파일
 ```
 
 제거하려면 BAPBAP을 종료한 뒤 `uninstall.bat`을 실행하세요. 이 BAT 역시 `uninstall.ps1` wrapper입니다.
@@ -92,7 +108,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDir "D:\S
 powershell -NoProfile -ExecutionPolicy Bypass -File .\uninstall.ps1 -GameDir "D:\SteamLibrary\steamapps\common\BAPBAP"
 ```
 
-제거기는 backup 원본 해시와 현재 대상 파일 상태를 확인한 뒤에만 복구합니다. 알 수 없는 수정 상태를 발견하면 덮어쓰지 않고 중단합니다.
+제거기는 backup 해시와 현재 대상 파일 상태를 확인한 뒤에만 복구합니다. Steam 원본 backup이 있으면 원본으로, 없으면 v1 상태로 되돌립니다. v1 상태에서 Steam 원본이 필요하면 Steam의 "게임 파일 무결성 검사"를 사용하세요. 알 수 없는 수정 상태를 발견하면 덮어쓰지 않고 중단합니다.
 
 ## Steam 업데이트 후
 
@@ -114,8 +130,12 @@ source/
   BapAssetTool.Program.cs
   packages.lock.json
   patch_gameassembly_dynamic_ui.py
+  patch_gameassembly_v2.py
+  build_v2_payload.py
   requirements-source.txt
 ```
+
+`patch_gameassembly_v2.py`는 v1 결과물에 적용할 byte edit 목록(`payload/v2/gameassembly_edits.json`)을 생성하고, `install.ps1`이 byte guard를 확인하며 이를 적용합니다. 따라서 v2 설치에 추가 EXE나 Python은 필요하지 않습니다. `build_v2_payload.py`는 번역표에서 `payload/v2`를 다시 생성하는 개발자용 도구이며 UnityPy가 필요합니다.
 
 배포 source는 현재 프로젝트의 검증된 patch logic과 byte-for-byte 동일하게 복사되어 있습니다.
 
