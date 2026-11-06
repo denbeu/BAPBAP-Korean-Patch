@@ -75,6 +75,19 @@ v2는 v1 위에 적용되는 증분 패치입니다. Steam 원본에서 설치�
 
 ## 설치
 
+### 가장 쉬운 방법: 패치 도구
+
+1. [릴리즈 페이지](https://github.com/denbeu/BAPBAP-Korean-Patch/releases/latest)에서 `BAPBAP-Korean-Patcher.exe`를 받습니다.
+2. BAPBAP을 종료한 뒤 실행합니다. 게임 폴더는 자동으로 찾습니다. 못 찾으면 `찾아보기`로 `bapbap.exe`가 있는 폴더를 지정하세요.
+3. `한글 패치 설치`를 누르고 확인합니다. 몇 분 걸릴 수 있습니다.
+4. 게임 설정에서 언어를 **Türkçe**로 선택합니다.
+
+제거는 같은 도구의 `패치 제거` 버튼으로 할 수 있습니다. 이 도구는 아래 `install.ps1`, `uninstall.ps1`을 그대로 실행하는 창일 뿐이라 설치 결과는 같습니다.
+
+서명되지 않은 프로그램이라 Windows SmartScreen 경고가 뜰 수 있습니다. **.NET 8 Runtime**이 없으면 도구가 안내합니다.
+
+### 스크립트로 설치
+
 일반 사용자는 repository에 포함된 prebuilt patcher를 사용하면 됩니다. 별도 source build는 필요하지 않습니다.
 
 `install.bat`을 실행하세요. `install.bat`은 같은 폴더의 `install.ps1`을 PowerShell로 실행하는 간단한 wrapper이며, Steam 설치 위치를 자동 탐색합니다.
@@ -133,7 +146,11 @@ source/
   patch_gameassembly_v2.py
   build_v2_payload.py
   requirements-source.txt
+  gui/BapKoreanPatcher.cs
+  gui/build_gui.ps1
 ```
+
+패치 도구 EXE는 Windows에 기본 포함된 C# 컴파일러로 빌드합니다: `powershell -NoProfile -ExecutionPolicy Bypass -File source\gui\build_gui.ps1`
 
 `patch_gameassembly_v2.py`는 v1 결과물에 적용할 byte edit 목록(`payload/v2/gameassembly_edits.json`)을 생성하고, `install.ps1`이 byte guard를 확인하며 이를 적용합니다. 따라서 v2 설치에 추가 EXE나 Python은 필요하지 않습니다. `build_v2_payload.py`는 번역표에서 `payload/v2`를 다시 생성하는 개발자용 도구이며 UnityPy가 필요합니다.
 

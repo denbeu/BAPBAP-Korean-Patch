@@ -39,6 +39,8 @@ Intentionally left in English: stylised item names (`Lock.down`, `Virus.exe`, ..
 - object diff against v1: `sharedassets0` 1,572 changed, `level0` 73 changed, `resources` 38 changed, all planned; `0` unexpected; object counts unchanged
 - `install.ps1 -DryRun`: PASS on Windows PowerShell 5.1 and PowerShell 7
 - install, idempotent re-run, uninstall to v1, and reinstall: PASS
+- GUI patcher, driven through its real window on a throwaway folder: install and uninstall PASS
+- install from Steam originals on a throwaway folder: PASS with identical v2 hashes. `GameAssembly.dll` and `level0` were rebuilt to the true original hashes. `sharedassets0` used a stand-in with the v1 edits reversed, because the Turkish text is not available locally and the installer overwrites it
 
 Every patched code literal was audited at each use site because a shared literal can also be an identifier. `Occupied` looked like a label but feeds `Animator.StringToHash` in `UICustomLobbyPlayer`; translating it left empty custom-lobby slots showing dummy players, so it was removed. Do not add a code literal without checking what consumes it.
 

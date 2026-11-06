@@ -20,3 +20,4 @@ backups/
 # Local test output
 test-output/
 *.tmp
+dist/

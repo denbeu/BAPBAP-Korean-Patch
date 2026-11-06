@@ -62,6 +62,12 @@ Because the community patch has no access to the official source project, it cur
 
 ## Install
 
+### Easiest: patch tool
+
+Download `BAPBAP-Korean-Patcher.exe` from the [releases page](https://github.com/denbeu/BAPBAP-Korean-Patch/releases/latest), close BAPBAP, run it, confirm the game folder, and press the install button. It is a window around `install.ps1` and `uninstall.ps1`, so the result is the same. The program is unsigned, so Windows SmartScreen may warn. It tells you if the .NET 8 Runtime is missing.
+
+### With scripts
+
 Normal users can use the prebuilt patchers under `tools/`; building from source is not required.
 
 Run `install.bat`. It is a small wrapper that invokes `install.ps1` with PowerShell and forwards any arguments. The PowerShell installer attempts to locate the Steam installation automatically.
