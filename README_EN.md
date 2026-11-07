@@ -58,7 +58,7 @@ Because the community patch has no access to the official source project, it cur
 1. Install the supported BAPBAP build through Steam.
 2. Close BAPBAP before installing or uninstalling.
 3. Install the **.NET 8 Runtime** for the prebuilt `BapAssetTool.exe`.
-4. The target files must match the supported original or v1 hashes. Files modified by another mod or by hand are rejected.
+4. The target files must match the supported original or v1 hashes, or have a verified backup. Other files are rejected.
 
 ## Install
 
@@ -84,7 +84,7 @@ To run the full patch chain and verify the generated final hashes without changi
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDir "D:\SteamLibrary\steamapps\common\BAPBAP" -DryRun
 ```
 
-The installer validates the original or v1 files, builds replacements in a temporary directory, and installs them only when all five outputs exactly match [PATCH_SCOPE.md](PATCH_SCOPE.md).
+The installer checks each of the five files on its own, builds replacements in a temporary directory, and replaces files only when the outputs exactly match [PATCH_SCOPE.md](PATCH_SCOPE.md). Replacements are verified on the game drive and swapped in by rename, so an interruption leaves no half-written file. If an earlier run was interrupted and a file no longer matches, a verified backup is used to continue.
 
 ## Backup and uninstall
 

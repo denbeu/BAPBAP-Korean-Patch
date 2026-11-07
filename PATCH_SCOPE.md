@@ -46,6 +46,16 @@ Every patched code literal was audited at each use site because a shared literal
 
 Not localizable from the client: lobby chat notices such as `joined the lobby`, which appear to be sent by the server.
 
+## v2.0.1 installer changes
+
+The patched files and their hashes are unchanged from v2.0.0.
+
+- `GameAssembly.dll` is patched directly by `install.ps1`, so the PyInstaller step (about two thirds of install time) is gone.
+- Each file is judged on its own, and a file matching no known state is taken from a verified backup.
+- Backups and replacements are written under a temporary name, verified, then renamed.
+- Each tool step has a 15 minute limit.
+- The GUI shows step progress and elapsed time, can cancel, stops its workers if it is killed, cleans up work folders left by a killed run, and saves a log to `%LOCALAPPDATA%\BAPBAP-Korean-Patcher\last-run.log`.
+
 See `install.ps1` for the exact chain. `source/patch_gameassembly_v2.py` and `source/build_v2_payload.py` regenerate `payload/v2`.
 
 The user-facing repository ships only the authored patch data/tools needed to reproduce these outputs from a legitimate local installation.

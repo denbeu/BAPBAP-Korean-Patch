@@ -8,18 +8,130 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
+// Everything started for a run belongs to this job, so closing it stops the whole process tree.
+// The handle also closes if the patcher itself is killed, so no worker keeps running unseen.
+internal sealed class KillOnCloseJob : IDisposable
+{
+    [StructLayout(LayoutKind.Sequential)]
+    private struct BasicLimits
+    {
+        public long PerProcessUserTimeLimit;
+        public long PerJobUserTimeLimit;
+        public uint LimitFlags;
+        public UIntPtr MinimumWorkingSetSize;
+        public UIntPtr MaximumWorkingSetSize;
+        public uint ActiveProcessLimit;
+        public UIntPtr Affinity;
+        public uint PriorityClass;
+        public uint SchedulingClass;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct IoCounters
+    {
+        public ulong A, B, C, D, E, F;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct ExtendedLimits
+    {
+        public BasicLimits Basic;
+        public IoCounters Io;
+        public UIntPtr ProcessMemoryLimit;
+        public UIntPtr JobMemoryLimit;
+        public UIntPtr PeakProcessMemoryUsed;
+        public UIntPtr PeakJobMemoryUsed;
+    }
+
+    private const int JobObjectExtendedLimitInformation = 9;
+    private const uint JobObjectLimitKillOnJobClose = 0x2000;
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+    private static extern IntPtr CreateJobObject(IntPtr attributes, string name);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool SetInformationJobObject(IntPtr job, int infoClass, ref ExtendedLimits info, uint size);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool AssignProcessToJobObject(IntPtr job, IntPtr process);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool CloseHandle(IntPtr handle);
+
+    private IntPtr _job;
+
+    public KillOnCloseJob()
+    {
+        _job = CreateJobObject(IntPtr.Zero, null);
+        var info = new ExtendedLimits();
+        info.Basic.LimitFlags = JobObjectLimitKillOnJobClose;
+        SetInformationJobObject(_job, JobObjectExtendedLimitInformation, ref info, (uint)Marshal.SizeOf(typeof(ExtendedLimits)));
+    }
+
+    public void Add(Process process)
+    {
+        AssignProcessToJobObject(_job, process.Handle);
+    }
+
+    public void Dispose()
+    {
+        if (_job != IntPtr.Zero)
+        {
+            CloseHandle(_job);
+            _job = IntPtr.Zero;
+        }
+    }
+}
+
 internal static class Engine
 {
     private const string ResourcePrefix = "bundle/";
 
-    public const long RequiredTempBytes = 3L * 1024 * 1024 * 1024;
-    public const long RequiredGameBytes = 1L * 1024 * 1024 * 1024;
+    public const long RequiredTempBytes = 3L * 512 * 1024 * 1024;
+    public const long RequiredGameBytes = 3L * 512 * 1024 * 1024;
+
+    // Removes work folders left by a run that was killed. Skipped while another patcher is open.
+    public static void CleanStaleTemp()
+    {
+        Process[] all = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
+        int count = all.Length;
+        foreach (Process p in all)
+            p.Dispose();
+        if (count > 1)
+            return;
+        foreach (string pattern in new[] { "bapko-tool-*", "bapko-*" })
+        {
+            string[] dirs;
+            try { dirs = Directory.GetDirectories(Path.GetTempPath(), pattern); }
+            catch (IOException) { return; }
+            catch (UnauthorizedAccessException) { return; }
+            foreach (string dir in dirs)
+                Cleanup(dir);
+        }
+    }
+
+    public static string LogPath
+    {
+        get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"BAPBAP-Korean-Patcher\last-run.log"); }
+    }
+
+    public static void SaveLog(string text)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(LogPath));
+            File.WriteAllText(LogPath, text, new UTF8Encoding(true));
+        }
+        catch (IOException) { }
+        catch (UnauthorizedAccessException) { }
+    }
 
     public static string Extract()
     {
@@ -50,7 +162,7 @@ internal static class Engine
     }
 
     // Runs a bundled script and returns its exit code. Output lines go to onLine.
-    public static int RunScript(string extracted, string script, string gameDir, bool dryRun, Action<string> onLine)
+    public static int RunScript(string extracted, string script, string gameDir, bool dryRun, KillOnCloseJob job, Action<string> onLine)
     {
         string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
         var psi = new ProcessStartInfo
@@ -79,9 +191,14 @@ internal static class Engine
             process.OutputDataReceived += handler;
             process.ErrorDataReceived += handler;
             process.Start();
+            job.Add(process);
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-            process.WaitForExit();
+            // Timed wait: the parameterless overload also waits for every pipe handle a descendant may hold.
+            while (!process.WaitForExit(500)) { }
+            Thread.Sleep(300);
+            process.CancelOutputRead();
+            process.CancelErrorRead();
             return process.ExitCode;
         }
     }
@@ -156,12 +273,21 @@ internal static class Engine
         return false;
     }
 
-    public static bool IsGameRunning()
+    public static bool IsGameRunning(string gameDir)
     {
-        Process[] found = Process.GetProcessesByName("bapbap");
-        foreach (Process p in found)
+        bool running = false;
+        foreach (Process p in Process.GetProcessesByName("bapbap"))
+        {
+            try
+            {
+                if (p.MainModule.FileName.StartsWith(gameDir + "\\", StringComparison.OrdinalIgnoreCase))
+                    running = true;
+            }
+            catch (System.ComponentModel.Win32Exception) { running = true; }
+            catch (InvalidOperationException) { }
             p.Dispose();
-        return found.Length > 0;
+        }
+        return running;
     }
 
     public static bool CanWrite(string gameDir)
@@ -192,23 +318,31 @@ internal static class Engine
             return "되돌릴 백업이 없습니다.\r\n\r\nSteam의 게임 파일 무결성 검사로 원본을 복구할 수 있습니다.";
         if (log.Contains("unknown/modified"))
             return "게임 파일이 알 수 없는 상태라 덮어쓰지 않았습니다.\r\n\r\nSteam의 게임 파일 무결성 검사로 원본을 복구할 수 있습니다.";
-        return "작업에 실패했습니다. 게임 파일이 교체되기 전 단계라면 변경된 내용은 없습니다.\r\n\r\n자세한 내용은 로그를 확인해 주세요.";
+        if (log.Contains("did not finish in time"))
+            return "패치 단계가 너무 오래 걸려 중단했습니다. 게임 파일은 그대로입니다.\r\n\r\n백신 프로그램이 패치 도구를 검사하고 있을 수 있습니다. 잠시 후 다시 시도해 주세요.";
+        return "작업에 실패했습니다. 게임 파일은 모두 확인된 뒤에만 교체되므로 다시 시도할 수 있습니다.\r\n\r\n자세한 내용은 로그를 확인해 주세요.";
     }
 }
 
 internal sealed class MainForm : Form
 {
-    private const string Version = "2.0.0";
+    private const string Version = "2.0.1";
 
     private readonly TextBox _path = new TextBox();
     private readonly Button _browse = new Button();
     private readonly Button _install = new Button();
     private readonly Button _uninstall = new Button();
+    private readonly Button _cancel = new Button();
+    private readonly System.Windows.Forms.Timer _clock = new System.Windows.Forms.Timer();
+    private readonly Stopwatch _elapsed = new Stopwatch();
     private readonly Label _status = new Label();
     private readonly ProgressBar _progress = new ProgressBar();
     private readonly TextBox _log = new TextBox();
     private readonly StringBuilder _logText = new StringBuilder();
     private bool _busy;
+    private bool _cancelled;
+    private string _stepText = "";
+    private KillOnCloseJob _job;
 
     public MainForm(string initialPath)
     {
@@ -249,6 +383,15 @@ internal sealed class MainForm : Form
         _uninstall.Size = new Size(120, 42);
         _uninstall.Click += (s, e) => Start("uninstall.ps1");
 
+        _cancel.Text = "취소";
+        _cancel.Location = new Point(394, 168);
+        _cancel.Size = new Size(90, 42);
+        _cancel.Visible = false;
+        _cancel.Click += OnCancel;
+
+        _clock.Interval = 1000;
+        _clock.Tick += (s, e) => ShowProgressText();
+
         _progress.Location = new Point(18, 222);
         _progress.Size = new Size(584, 10);
         _progress.Style = ProgressBarStyle.Blocks;
@@ -261,7 +404,7 @@ internal sealed class MainForm : Form
         _log.BackColor = SystemColors.Window;
         _log.Font = new Font("Consolas", 8.5f);
 
-        Controls.AddRange(new Control[] { title, note, pathLabel, _path, _browse, _status, _install, _uninstall, _progress, _log });
+        Controls.AddRange(new Control[] { title, note, pathLabel, _path, _browse, _status, _install, _uninstall, _cancel, _progress, _log });
         FormClosing += (s, e) =>
         {
             if (_busy)
@@ -312,7 +455,7 @@ internal sealed class MainForm : Form
     private bool Precheck(bool installing)
     {
         string dir = GameDir;
-        if (Engine.IsGameRunning())
+        if (Engine.IsGameRunning(dir))
         {
             MessageBox.Show(this, "게임이 실행 중입니다. 게임을 완전히 종료한 뒤 다시 시도해 주세요.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
@@ -337,7 +480,7 @@ internal sealed class MainForm : Form
         long game = Engine.FreeBytes(dir);
         if (temp < Engine.RequiredTempBytes || game < Engine.RequiredGameBytes)
         {
-            MessageBox.Show(this, "디스크 공간이 부족합니다.\r\n\r\n임시 폴더 드라이브에 3GB, 게임 드라이브에 1GB 이상의 여유 공간이 필요합니다.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(this, "디스크 공간이 부족합니다.\r\n\r\n임시 폴더 드라이브와 게임 드라이브에 각각 1.5GB 이상의 여유 공간이 필요합니다.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
         }
         return true;
@@ -371,12 +514,18 @@ internal sealed class MainForm : Form
             return;
 
         _busy = true;
+        _cancelled = false;
         _logText.Clear();
         _log.Clear();
         _progress.Style = ProgressBarStyle.Marquee;
         _status.ForeColor = SystemColors.ControlText;
-        _status.Text = installing ? "패치 설치 중입니다. 창을 닫지 마세요..." : "패치 제거 중입니다. 창을 닫지 마세요...";
+        _stepText = "파일 확인 중";
+        _cancel.Enabled = true;
+        _cancel.Visible = true;
+        _elapsed.Restart();
+        _clock.Start();
         UpdateState();
+        ShowProgressText();
 
         string dir = GameDir;
         var worker = new Thread(() => Work(script, dir, installing)) { IsBackground = true };
@@ -389,8 +538,10 @@ internal sealed class MainForm : Form
         string extracted = null;
         try
         {
+            Engine.CleanStaleTemp();
             extracted = Engine.Extract();
-            code = Engine.RunScript(extracted, script, dir, false, Append);
+            _job = new KillOnCloseJob();
+            code = Engine.RunScript(extracted, script, dir, false, _job, Append);
         }
         catch (Exception ex)
         {
@@ -398,7 +549,11 @@ internal sealed class MainForm : Form
         }
         finally
         {
+            if (_job != null)
+                _job.Dispose();
             Engine.Cleanup(extracted);
+            // The job is closed, so a work folder left by a cancelled script is no longer in use.
+            Engine.CleanStaleTemp();
         }
         BeginInvoke((Action)(() => Finish(code, installing)));
     }
@@ -409,14 +564,52 @@ internal sealed class MainForm : Form
         {
             _logText.AppendLine(line);
             _log.AppendText(line + Environment.NewLine);
+            Match step = Regex.Match(line, @"^\[(\d+)/(\d+)\] (.+)$");
+            if (step.Success)
+            {
+                _progress.Style = ProgressBarStyle.Blocks;
+                _progress.Maximum = int.Parse(step.Groups[2].Value, CultureInfo.InvariantCulture);
+                _progress.Value = Math.Min(_progress.Maximum, int.Parse(step.Groups[1].Value, CultureInfo.InvariantCulture));
+                _stepText = "단계 " + step.Groups[1].Value + "/" + step.Groups[2].Value;
+                ShowProgressText();
+            }
         }));
+    }
+
+    private void ShowProgressText()
+    {
+        if (_busy)
+            _status.Text = _stepText + " (" + (int)_elapsed.Elapsed.TotalMinutes + "분 " + _elapsed.Elapsed.Seconds + "초 경과). 보통 몇 분 안에 끝납니다.";
+    }
+
+    private void OnCancel(object sender, EventArgs e)
+    {
+        const string Question = "작업을 취소할까요?\r\n\r\n게임 파일은 검증이 끝난 뒤에만 교체되므로 안전하게 멈출 수 있습니다.";
+        if (MessageBox.Show(this, Question, Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            return;
+        _cancelled = true;
+        _cancel.Enabled = false;
+        KillOnCloseJob job = _job;
+        if (job != null)
+            job.Dispose();
     }
 
     private void Finish(int code, bool installing)
     {
         _busy = false;
+        _clock.Stop();
+        _elapsed.Stop();
+        _cancel.Visible = false;
         _progress.Style = ProgressBarStyle.Blocks;
+        _progress.Value = 0;
         UpdateState();
+        Engine.SaveLog(_logText.ToString());
+        if (_cancelled)
+        {
+            _status.ForeColor = Color.Firebrick;
+            _status.Text = "취소했습니다. 다시 시도할 수 있습니다.";
+            return;
+        }
         if (code == 0)
         {
             _status.ForeColor = Color.SeaGreen;
@@ -432,7 +625,7 @@ internal sealed class MainForm : Form
         {
             _status.ForeColor = Color.Firebrick;
             _status.Text = "실패했습니다. 아래 로그를 확인해 주세요.";
-            MessageBox.Show(this, Engine.ExplainFailure(_logText.ToString()), Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(this, Engine.ExplainFailure(_logText.ToString()) + "\r\n\r\n로그 파일: " + Engine.LogPath, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -476,10 +669,11 @@ internal static class Program
     {
         string extracted = Engine.Extract();
         var lines = new List<string>();
+        var job = new KillOnCloseJob();
         try
         {
             string script = mode == "uninstall" ? "uninstall.ps1" : "install.ps1";
-            int code = Engine.RunScript(extracted, script, gameDir, mode == "dryrun", line => { lock (lines) lines.Add(line); });
+            int code = Engine.RunScript(extracted, script, gameDir, mode == "dryrun", job, line => { lock (lines) lines.Add(line); });
             lock (lines)
             {
                 lines.Add("exit=" + code.ToString(CultureInfo.InvariantCulture));
@@ -489,6 +683,7 @@ internal static class Program
         }
         finally
         {
+            job.Dispose();
             Engine.Cleanup(extracted);
         }
     }

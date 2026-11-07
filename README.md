@@ -104,7 +104,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDir "D:\S
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDir "D:\SteamLibrary\steamapps\common\BAPBAP" -DryRun
 ```
 
-설치기는 원본 또는 v1 상태의 파일 해시를 확인하고 임시 폴더에서 patch를 만든 뒤, 다섯 결과가 모두 [PATCH_SCOPE.md](PATCH_SCOPE.md)의 최종 해시와 정확히 일치할 때만 교체합니다.
+설치기는 다섯 파일의 상태를 각각 확인하고 임시 폴더에서 patch를 만든 뒤, 결과가 [PATCH_SCOPE.md](PATCH_SCOPE.md)의 최종 해시와 정확히 일치할 때만 교체합니다. 교체 직전에 게임 드라이브에서 한 번 더 검증하고 이름 변경으로 교체하므로, 도중에 중단돼도 반쯤 쓴 파일이 남지 않습니다. 이전 실행이 중단되어 파일이 어긋나 있으면 검증된 백업을 사용해 이어서 설치합니다.
 
 ## 백업과 제거
 
@@ -129,7 +129,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\uninstall.ps1 -GameDir "D:
 
 ## 백신/SmartScreen 경고
 
-`tools/GameAssemblyPatcher.exe`는 Python/PyInstaller로 만든 one-file executable이며, 프로그램의 목적 자체가 사용자의 로컬 게임 binary를 검증 후 수정하는 것입니다. 이런 특성 때문에 일부 보안 제품에서 휴리스틱 경고나 오탐이 발생할 수 있습니다.
+이 패치의 목적 자체가 사용자의 로컬 게임 binary를 검증 후 수정하는 것이라, 일부 보안 제품에서 휴리스틱 경고나 오탐이 발생할 수 있습니다. v2.0.1부터 설치 과정에서 Python 패처(`tools/GameAssemblyPatcher.exe`)를 실행하지 않습니다. `GameAssembly.dll`은 `install.ps1`이 byte guard를 확인하며 직접 수정합니다.
 
 경고가 발생했다면 보안 기능을 무작정 끄지 말고, `source/`를 검토하거나 아래 절차로 직접 빌드해 사용하세요.
 
@@ -144,6 +144,7 @@ source/
   packages.lock.json
   patch_gameassembly_dynamic_ui.py
   patch_gameassembly_v2.py
+  build_ga_full_edits.py
   build_v2_payload.py
   requirements-source.txt
   gui/BapKoreanPatcher.cs
@@ -152,7 +153,7 @@ source/
 
 패치 도구 EXE는 Windows에 기본 포함된 C# 컴파일러로 빌드합니다: `powershell -NoProfile -ExecutionPolicy Bypass -File source\gui\build_gui.ps1`
 
-`patch_gameassembly_v2.py`는 v1 결과물에 적용할 byte edit 목록(`payload/v2/gameassembly_edits.json`)을 생성하고, `install.ps1`이 byte guard를 확인하며 이를 적용합니다. 따라서 v2 설치에 추가 EXE나 Python은 필요하지 않습니다. `build_v2_payload.py`는 번역표에서 `payload/v2`를 다시 생성하는 개발자용 도구이며 UnityPy가 필요합니다.
+`patch_gameassembly_v2.py`는 v1 결과물에 적용할 byte edit 목록(`payload/v2/gameassembly_edits.json`)을, `build_ga_full_edits.py`는 Steam 원본에서 최종 결과로 바로 가는 목록(`gameassembly_edits_from_original.json`)을 생성합니다. `install.ps1`이 byte guard를 확인하며 이를 적용하므로 설치에 Python은 필요하지 않습니다. `build_v2_payload.py`는 번역표에서 `payload/v2`를 다시 생성하는 개발자용 도구이며 UnityPy가 필요합니다.
 
 배포 source는 현재 프로젝트의 검증된 patch logic과 byte-for-byte 동일하게 복사되어 있습니다.
 

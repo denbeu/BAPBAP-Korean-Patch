@@ -11,7 +11,7 @@ if (-not (Test-Path -LiteralPath $Csc)) { throw "csc.exe not found: $Csc" }
 New-Item -ItemType Directory -Force -Path (Split-Path -Parent $Output) | Out-Null
 
 $bundle = New-Object System.Collections.Generic.List[string]
-foreach ($f in 'install.ps1','uninstall.ps1','LICENSE','TRANSLATION_LICENSE.md','THIRD_PARTY_NOTICES.md','tools\BapAssetTool\BapAssetTool.exe','tools\GameAssemblyPatcher.exe') { $bundle.Add($f) }
+foreach ($f in 'install.ps1','uninstall.ps1','LICENSE','TRANSLATION_LICENSE.md','THIRD_PARTY_NOTICES.md','tools\BapAssetTool\BapAssetTool.exe') { $bundle.Add($f) }
 foreach ($d in 'payload','THIRD_PARTY_LICENSES') {
     Get-ChildItem -LiteralPath (Join-Path $Root $d) -Recurse -File | ForEach-Object { $bundle.Add($_.FullName.Substring($Root.Length + 1)) }
 }

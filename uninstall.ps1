@@ -54,11 +54,12 @@ function Resolve-GameDir([string]$Requested) {
     throw 'BAPBAP installation was not found. Re-run with -GameDir "X:\...\BAPBAP".'
 }
 
-if (Get-Process -Name 'bapbap' -ErrorAction SilentlyContinue) {
-    throw 'BAPBAP is running. Close the game before uninstalling.'
-}
-
 $GameDir = Resolve-GameDir $GameDir
+foreach ($p in @(Get-Process -Name 'bapbap' -ErrorAction SilentlyContinue)) {
+    if (-not $p.Path -or $p.Path.StartsWith($GameDir + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'BAPBAP is running. Close the game before uninstalling.'
+    }
+}
 $Targets = @{
     shared    = Join-Path $GameDir 'bapbap_Data\sharedassets0.assets'
     level0    = Join-Path $GameDir 'bapbap_Data\level0'
