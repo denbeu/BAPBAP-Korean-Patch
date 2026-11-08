@@ -53,6 +53,16 @@ The `GameAssembly.dll` patch is intentionally disclosed. It is generated only af
 
 Because the community patch has no access to the official source project, it currently reuses the **Turkish locale slot** for Korean instead of adding a native Korean locale. Select Türkçe in the in-game language setting after installation. This is a community-patch compatibility mechanism, not an official integration design.
 
+## Optional stat panel (v2.1.0)
+
+Tick `능력치 창 모드 함께 설치` in the patch tool, or pass `-StatPanel` to `install.ps1`. In a match, **hold X** to see the current character's stats in the game's tooltip window.
+
+- Rows: damage, damage multiplier, basic attack damage, attack speed, move speed, cooldown reduction, crit chance, crit damage, lifesteal, max HP, HP regen, defense, thorns, shred, luck.
+- Basic attack damage is the left-click ability's damage computed by the game's own `CharAbilities.GetModifiedDamage`. Flat damage and the damage multiplier are included; crits, the target's defense, and conditional bonuses are not. Combo attacks show each hit, separated by `/`.
+- Hidden in the lobby and while typing in chat. It only reads the local character (or the spectated one) and changes no game state.
+- Only `GameAssembly.dll` changes. Installing again without the option removes just the stat panel, and uninstalling removes it along with the patch.
+- Like the translation patch, it means playing online with a modified client. The developer's policy has not been checked.
+
 ## Requirements
 
 1. Install the supported BAPBAP build through Steam.
@@ -64,7 +74,7 @@ Because the community patch has no access to the official source project, it cur
 
 ### Easiest: patch tool
 
-Download `BAPBAP-Korean-Patcher.exe` from the [releases page](https://github.com/denbeu/BAPBAP-Korean-Patch/releases/latest), close BAPBAP, run it, confirm the game folder, and press the install button. It is a window around `install.ps1` and `uninstall.ps1`, so the result is the same. The program is unsigned, so Windows SmartScreen may warn. It tells you if the .NET 8 Runtime is missing.
+Download `BAPBAP-Korean-Patcher.exe` from the [releases page](https://github.com/denbeu/BAPBAP-Korean-Patch/releases/latest), close BAPBAP, run it, confirm the game folder, optionally tick the stat panel box, and press the install button. It is a window around `install.ps1` and `uninstall.ps1`, so the result is the same. The program is unsigned, so Windows SmartScreen may warn. It tells you if the .NET 8 Runtime is missing.
 
 ### With scripts
 

@@ -13,6 +13,7 @@ $Expected = @{
     ga_original        = '75278848FDD7861D3EA7B19E0A9D6397464AC763F39F2B0A5ACB9A7D33385F69'
     ga_v1              = 'BB7F8A6A46FF8C1BEB4B9D97F4EB0F6952ECB283592DCD929EB11CDFCD6DA413'
     ga_v2              = '775735C873581D8BDEA90AD18615FAA44226D7A3F44A0486009852BD7C49BB09'
+    ga_stat            = 'C5FEC8A916C82E5B372FFA03F4C42B11B4489405BF805D5E81DCEE778610E79D'
     resources_original = 'D22FD380E83EDE2B5C261C6F45CAE9E19B35FE2D667BF7EF9F31FA981DE3E7D8'
     resources_v2       = 'E7D222A7B788F934000AD98D2F3F01A9D6EEEE7AD3922768C9CA068F944E60B1'
     metadata_original  = 'A159A9F1D5CB9F3F20DFDB64C7C9773D44B0E8428227EA19913D801D19158757'
@@ -101,7 +102,7 @@ foreach ($k in $Sources.Keys) {
 $Known = @{
     shared    = @($Expected.shared_original,$Expected.shared_v1,$Expected.shared_v2)
     level0    = @($Expected.level0_original,$Expected.level0_v1,$Expected.level0_v2)
-    ga        = @($Expected.ga_original,$Expected.ga_v1,$Expected.ga_v2)
+    ga        = @($Expected.ga_original,$Expected.ga_v1,$Expected.ga_v2,$Expected.ga_stat)
     resources = @($Expected.resources_original,$Expected.resources_v2)
     metadata  = @($Expected.metadata_original,$Expected.metadata_v2)
 }

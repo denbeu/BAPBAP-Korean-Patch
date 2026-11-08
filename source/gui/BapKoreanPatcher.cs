@@ -161,15 +161,30 @@ internal static class Engine
         catch (UnauthorizedAccessException) { }
     }
 
+    // GameAssembly.dll of the Korean patch v2 with the optional stat panel (install.ps1 ga_stat).
+    public const string StatPanelHash = "C5FEC8A916C82E5B372FFA03F4C42B11B4489405BF805D5E81DCEE778610E79D";
+
+    public static bool HasStatPanel(string gameDir)
+    {
+        try
+        {
+            using (var sha = System.Security.Cryptography.SHA256.Create())
+            using (FileStream stream = File.OpenRead(Path.Combine(gameDir, "GameAssembly.dll")))
+                return BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "") == StatPanelHash;
+        }
+        catch (IOException) { return false; }
+        catch (UnauthorizedAccessException) { return false; }
+    }
+
     // Runs a bundled script and returns its exit code. Output lines go to onLine.
-    public static int RunScript(string extracted, string script, string gameDir, bool dryRun, KillOnCloseJob job, Action<string> onLine)
+    public static int RunScript(string extracted, string script, string gameDir, bool dryRun, bool statPanel, KillOnCloseJob job, Action<string> onLine)
     {
         string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
         var psi = new ProcessStartInfo
         {
             FileName = Path.Combine(system, @"WindowsPowerShell\v1.0\powershell.exe"),
             Arguments = "-NoProfile -NonInteractive -ExecutionPolicy Bypass -File " + Quote(Path.Combine(extracted, script))
-                + " -GameDir " + Quote(gameDir) + (dryRun ? " -DryRun" : ""),
+                + " -GameDir " + Quote(gameDir) + (dryRun ? " -DryRun" : "") + (statPanel ? " -StatPanel" : ""),
             WorkingDirectory = extracted,
             UseShellExecute = false,
             CreateNoWindow = true,
@@ -326,9 +341,11 @@ internal static class Engine
 
 internal sealed class MainForm : Form
 {
-    private const string Version = "2.0.1";
+    private const string Version = "2.1.0";
 
     private readonly TextBox _path = new TextBox();
+    private readonly CheckBox _statPanel = new CheckBox();
+    private int _detectToken;
     private readonly Button _browse = new Button();
     private readonly Button _install = new Button();
     private readonly Button _uninstall = new Button();
@@ -349,7 +366,7 @@ internal sealed class MainForm : Form
         Text = "BAPBAP 한글 패치 " + Version;
         Font = new Font("Malgun Gothic", 9.5f);
         AutoScaleMode = AutoScaleMode.Dpi;
-        ClientSize = new Size(620, 430);
+        ClientSize = new Size(620, 462);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         MaximizeBox = false;
         StartPosition = FormStartPosition.CenterScreen;
@@ -361,7 +378,7 @@ internal sealed class MainForm : Form
         _path.Location = new Point(18, 106);
         _path.Size = new Size(490, 26);
         _path.Text = initialPath;
-        _path.TextChanged += (s, e) => UpdateState();
+        _path.TextChanged += (s, e) => { UpdateState(); DetectStatPanel(); };
 
         _browse.Text = "찾아보기";
         _browse.Location = new Point(516, 104);
@@ -372,19 +389,23 @@ internal sealed class MainForm : Form
         _status.Location = new Point(18, 138);
         _status.Size = new Size(584, 24);
 
+        _statPanel.Text = "능력치 창 모드 함께 설치 (매치 중 X를 누르고 있으면 내 능력치 표시)";
+        _statPanel.AutoSize = true;
+        _statPanel.Location = new Point(18, 166);
+
         _install.Text = "한글 패치 설치";
         _install.Font = new Font("Malgun Gothic", 10.5f, FontStyle.Bold);
-        _install.Location = new Point(18, 168);
+        _install.Location = new Point(18, 198);
         _install.Size = new Size(240, 42);
         _install.Click += (s, e) => Start("install.ps1");
 
         _uninstall.Text = "패치 제거";
-        _uninstall.Location = new Point(266, 168);
+        _uninstall.Location = new Point(266, 198);
         _uninstall.Size = new Size(120, 42);
         _uninstall.Click += (s, e) => Start("uninstall.ps1");
 
         _cancel.Text = "취소";
-        _cancel.Location = new Point(394, 168);
+        _cancel.Location = new Point(394, 198);
         _cancel.Size = new Size(90, 42);
         _cancel.Visible = false;
         _cancel.Click += OnCancel;
@@ -392,11 +413,11 @@ internal sealed class MainForm : Form
         _clock.Interval = 1000;
         _clock.Tick += (s, e) => ShowProgressText();
 
-        _progress.Location = new Point(18, 222);
+        _progress.Location = new Point(18, 252);
         _progress.Size = new Size(584, 10);
         _progress.Style = ProgressBarStyle.Blocks;
 
-        _log.Location = new Point(18, 242);
+        _log.Location = new Point(18, 272);
         _log.Size = new Size(584, 172);
         _log.Multiline = true;
         _log.ReadOnly = true;
@@ -404,7 +425,7 @@ internal sealed class MainForm : Form
         _log.BackColor = SystemColors.Window;
         _log.Font = new Font("Consolas", 8.5f);
 
-        Controls.AddRange(new Control[] { title, note, pathLabel, _path, _browse, _status, _install, _uninstall, _cancel, _progress, _log });
+        Controls.AddRange(new Control[] { title, note, pathLabel, _path, _browse, _status, _statPanel, _install, _uninstall, _cancel, _progress, _log });
         FormClosing += (s, e) =>
         {
             if (_busy)
@@ -414,15 +435,36 @@ internal sealed class MainForm : Form
             }
         };
         UpdateState();
+        DetectStatPanel();
     }
 
     private string GameDir { get { return _path.Text.Trim().Trim('"').TrimEnd('\\'); } }
+
+    // Ticks the box when the chosen folder already has the stat panel, so installing again keeps it.
+    // Hashing GameAssembly.dll takes a moment, so it runs off the UI thread; only the latest folder counts.
+    private void DetectStatPanel()
+    {
+        string dir = GameDir;
+        int token = Interlocked.Increment(ref _detectToken);
+        if (!Engine.IsGameFolder(dir))
+            return;
+        ThreadPool.QueueUserWorkItem(_ =>
+        {
+            bool has = Engine.HasStatPanel(dir);
+            BeginInvoke((Action)(() =>
+            {
+                if (token == _detectToken && !_busy)
+                    _statPanel.Checked = has;
+            }));
+        });
+    }
 
     private void UpdateState()
     {
         bool ok = Engine.IsGameFolder(GameDir);
         _install.Enabled = ok && !_busy;
         _uninstall.Enabled = ok && !_busy;
+        _statPanel.Enabled = !_busy;
         _path.Enabled = !_busy;
         _browse.Enabled = !_busy;
         if (_busy)
@@ -507,9 +549,12 @@ internal sealed class MainForm : Form
         bool installing = script == "install.ps1";
         if (!Precheck(installing))
             return;
+        bool statPanel = installing && _statPanel.Checked;
         string question = installing
-            ? "다음 폴더에 한글 패치를 설치합니다.\r\n\r\n" + GameDir + "\r\n\r\n현재 게임 파일은 폴더 안의 .bapko-backup에 백업됩니다. 몇 분 걸릴 수 있습니다."
-            : "다음 폴더에서 패치를 제거하고 백업으로 되돌립니다.\r\n\r\n" + GameDir;
+            ? "다음 폴더에 한글 패치를 설치합니다.\r\n\r\n" + GameDir
+                + "\r\n\r\n능력치 창 모드: " + (statPanel ? "설치" : "설치 안 함 (이미 설치돼 있으면 모드만 제거)")
+                + "\r\n\r\n현재 게임 파일은 폴더 안의 .bapko-backup에 백업됩니다. 몇 분 걸릴 수 있습니다."
+            : "다음 폴더에서 패치를 제거하고 백업으로 되돌립니다. 능력치 창 모드도 함께 제거됩니다.\r\n\r\n" + GameDir;
         if (MessageBox.Show(this, question, Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
             return;
 
@@ -528,11 +573,11 @@ internal sealed class MainForm : Form
         ShowProgressText();
 
         string dir = GameDir;
-        var worker = new Thread(() => Work(script, dir, installing)) { IsBackground = true };
+        var worker = new Thread(() => Work(script, dir, installing, statPanel)) { IsBackground = true };
         worker.Start();
     }
 
-    private void Work(string script, string dir, bool installing)
+    private void Work(string script, string dir, bool installing, bool statPanel)
     {
         int code = -1;
         string extracted = null;
@@ -541,7 +586,7 @@ internal sealed class MainForm : Form
             Engine.CleanStaleTemp();
             extracted = Engine.Extract();
             _job = new KillOnCloseJob();
-            code = Engine.RunScript(extracted, script, dir, false, _job, Append);
+            code = Engine.RunScript(extracted, script, dir, false, statPanel, _job, Append);
         }
         catch (Exception ex)
         {
@@ -614,9 +659,12 @@ internal sealed class MainForm : Form
         {
             _status.ForeColor = Color.SeaGreen;
             _status.Text = installing ? "설치가 끝났습니다." : "제거가 끝났습니다.";
+            string log = _logText.ToString();
             string done = installing
                 ? "한글 패치 설치가 끝났습니다.\r\n\r\n게임 설정에서 언어를 Türkçe로 선택해 주세요."
-                : _logText.ToString().Contains("previous patch (v1)")
+                    + (log.Contains("Stat panel: installed") ? "\r\n\r\n능력치 창: 매치 중 X를 누르고 있으면 표시됩니다."
+                        : log.Contains("Stat panel: removed") ? "\r\n\r\n능력치 창 모드를 제거했습니다." : "")
+                : log.Contains("previous patch (v1)")
                     ? "이전 패치(v1) 상태로 되돌렸습니다.\r\n\r\nSteam 원본이 필요하면 게임 파일 무결성 검사를 실행해 주세요."
                     : "패치를 제거하고 원본으로 되돌렸습니다.";
             MessageBox.Show(this, done, Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -635,7 +683,13 @@ internal sealed class MainForm : Form
         Opacity = 0;
         ShowInTaskbar = false;
         Show();
-        Application.DoEvents();
+        // Lets the background stat panel check finish so the checkbox shows the detected state.
+        var wait = Stopwatch.StartNew();
+        while (wait.ElapsedMilliseconds < 3000)
+        {
+            Application.DoEvents();
+            Thread.Sleep(20);
+        }
         using (var bitmap = new Bitmap(Width, Height))
         {
             DrawToBitmap(bitmap, new Rectangle(0, 0, Width, Height));
@@ -673,7 +727,9 @@ internal static class Program
         try
         {
             string script = mode == "uninstall" ? "uninstall.ps1" : "install.ps1";
-            int code = Engine.RunScript(extracted, script, gameDir, mode == "dryrun", job, line => { lock (lines) lines.Add(line); });
+            bool statPanel = mode == "install-stat" || mode == "dryrun-stat";
+            bool dryRun = mode == "dryrun" || mode == "dryrun-stat";
+            int code = Engine.RunScript(extracted, script, gameDir, dryRun, statPanel, job, line => { lock (lines) lines.Add(line); });
             lock (lines)
             {
                 lines.Add("exit=" + code.ToString(CultureInfo.InvariantCulture));

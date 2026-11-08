@@ -46,6 +46,22 @@ Every patched code literal was audited at each use site because a shared literal
 
 Not localizable from the client: lobby chat notices such as `joined the lobby`, which appear to be sent by the server.
 
+## Optional stat panel (v2.1.0)
+
+`install.ps1 -StatPanel` (the patch tool's checkbox) applies `payload/v2/stat_panel_edits.json` to the v2 `GameAssembly.dll`. Without the switch, a stat panel build is turned back into v2 by applying the same list in reverse. `uninstall.ps1` accepts the stat panel build as a known state.
+
+| File | v2 SHA-256 | v2 + stat panel SHA-256 |
+| --- | --- | --- |
+| `GameAssembly.dll` | `775735C873581D8BDEA90AD18615FAA44226D7A3F44A0486009852BD7C49BB09` | `C5FEC8A916C82E5B372FFA03F4C42B11B4489405BF805D5E81DCEE778610E79D` |
+
+How it works (`source/mods/stat_panel.py`):
+
+- The first call in `UIManager.Update` (`Screen.get_width`) is redirected to a helper in the `.bapko` section that tail-calls the original. While X is held (legacy `Input.GetKey`), and not while typing in chat, it rebuilds the text on key down and then every 16 frames and shows it through `UITooltip.ShowTooltip`. On key up it calls `UITooltip.HideTooltip`.
+- `ShowTooltip(..., fadeIn: false)` leaves a tooltip that faded out earlier at alpha 0, and `fadeIn: true` restarts the fade from 0 on every call, so the helper calls `UIAlphaFade.FadeInInstant` after showing.
+- Rows reuse `ItemManager.BuildItemStatStr`, so colors, icons, names, and the v2 word order match the game. Only the panel's damage multiplier row is renamed to `피해 배율` with `String.Replace`.
+- Basic attack damage: the slot 0 ability's class is found by its `GetTooltipDescription` vtable entry, and each hit's (damage, scaling) fields are passed to `CharAbilities.GetModifiedDamage` with `isCrit = false`. The fields come from the code that deals the damage, not the tooltips, which use other fields for Eve and leave out hits for several melee combos. Skinny's second hit uses `damage1Scaling`, as the game does.
+- The five v2 helpers share one unwind record and sit next to each other, so their exception-table entries are merged into one to make room for the two new helpers.
+
 ## v2.0.1 installer changes
 
 The patched files and their hashes are unchanged from v2.0.0.

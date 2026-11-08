@@ -44,6 +44,16 @@ Maison Bap의 공식 소스 프로젝트에 Korean locale을 통합하기 위한
 
 v2는 v1 위에 적용되는 증분 패치입니다. Steam 원본에서 설치하든 v1에서 업그레이드하든 결과 파일은 같습니다.
 
+## 능력치 창 모드 (선택, v2.1.0)
+
+패치 도구에서 `능력치 창 모드 함께 설치`를 체크하면 설치됩니다. 매치 중 **X를 누르고 있는 동안** 게임의 툴팁 창에 현재 캐릭터의 능력치가 표시됩니다.
+
+- 표시 항목: 피해, 피해 배율, 평타 피해, 공격 속도, 이동 속도, 재사용 대기시간 감소, 치명타 확률, 치명타 피해, 생명력 흡수, 최대 체력, 체력 재생, 방어, 가시, 방어 관통, 행운
+- `평타 피해`는 왼클릭 스킬의 피해를 게임의 피해 계산 함수(`CharAbilities.GetModifiedDamage`)로 구한 값입니다. 고정 피해와 피해 배율은 반영되고, 치명타·상대 방어·조건부 보너스는 빠집니다. 콤보 평타는 타수별 값을 `/`로 나눠 보여 줍니다.
+- 로비에 있거나 채팅을 입력하는 중에는 표시되지 않습니다. 내 캐릭터(관전 중에는 관전 대상)의 값을 읽기만 하고 게임 상태는 바꾸지 않습니다.
+- `GameAssembly.dll`에만 추가되는 변경입니다. 체크를 해제하고 다시 설치하면 모드만 빠지고, `패치 제거`는 모드까지 함께 되돌립니다.
+- 수정된 클라이언트로 온라인 게임에 접속한다는 점은 번역 패치와 같습니다. 개발사 정책은 확인되지 않았으니 사용 여부는 직접 판단해 주세요.
+
 ## 패치가 수정하는 파일
 
 설치 시 사용자의 로컬 게임 설치본에서 다음 다섯 파일을 대상으로 새 결과물을 생성합니다.
@@ -79,8 +89,9 @@ v2는 v1 위에 적용되는 증분 패치입니다. Steam 원본에서 설치�
 
 1. [릴리즈 페이지](https://github.com/denbeu/BAPBAP-Korean-Patch/releases/latest)에서 `BAPBAP-Korean-Patcher.exe`를 받습니다.
 2. BAPBAP을 종료한 뒤 실행합니다. 게임 폴더는 자동으로 찾습니다. 못 찾으면 `찾아보기`로 `bapbap.exe`가 있는 폴더를 지정하세요.
-3. `한글 패치 설치`를 누르고 확인합니다. 몇 분 걸릴 수 있습니다.
-4. 게임 설정에서 언어를 **Türkçe**로 선택합니다.
+3. 능력치 창 모드를 원하면 `능력치 창 모드 함께 설치`를 체크합니다. 이미 설치된 폴더면 자동으로 체크됩니다.
+4. `한글 패치 설치`를 누르고 확인합니다. 몇 분 걸릴 수 있습니다.
+5. 게임 설정에서 언어를 **Türkçe**로 선택합니다.
 
 제거는 같은 도구의 `패치 제거` 버튼으로 할 수 있습니다. 이 도구는 아래 `install.ps1`, `uninstall.ps1`을 그대로 실행하는 창일 뿐이라 설치 결과는 같습니다.
 
@@ -97,6 +108,8 @@ v2는 v1 위에 적용되는 증분 패치입니다. Steam 원본에서 설치�
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDir "D:\SteamLibrary\steamapps\common\BAPBAP"
 ```
+
+능력치 창 모드를 함께 설치하려면 `-StatPanel`을 붙입니다. 붙이지 않고 다시 실행하면 모드만 제거됩니다.
 
 게임 파일을 변경하지 않고 전체 patch chain이 검증된 최종 해시를 재현하는지만 확인하려면:
 
@@ -149,7 +162,10 @@ source/
   requirements-source.txt
   gui/BapKoreanPatcher.cs
   gui/build_gui.ps1
+  mods/stat_panel.py
 ```
+
+`mods/stat_panel.py`는 능력치 창 모드의 source입니다. v2 `GameAssembly.dll`에서 `payload/v2/stat_panel_edits.json`을 다시 생성합니다(`--write-edits`).
 
 패치 도구 EXE는 Windows에 기본 포함된 C# 컴파일러로 빌드합니다: `powershell -NoProfile -ExecutionPolicy Bypass -File source\gui\build_gui.ps1`
 
